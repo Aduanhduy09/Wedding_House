@@ -1,0 +1,32 @@
+﻿@model IEnumerable<Wedding_House.Models.Thamso>
+
+<table class="table table-bordered table-striped mt-3">
+    <thead class="table-dark">
+        <tr>
+            <th>Mã TS</th>
+            <th>Loại Ca</th>
+            <th>Đơn Giá Bàn Tối Thiểu</th>
+            <th>Số Lượng Bàn Tối Đa</th>
+            <th>Số Lượng Món Ăn</th>
+            <th>Số Lượng Dịch Vụ</th>
+            <th class="text-center">Thao tác</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.LoaiCa</td>
+                <td>@item.DonGiaBanToiThieu</td>
+                <td>@item.SoLuongBanToiDa</td>
+                <td>@item.SoLuongMonAn</td>
+                <td>@item.SoLuongDichVu</td>
+                <td class="text-center">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table></td> </tr> </table>
