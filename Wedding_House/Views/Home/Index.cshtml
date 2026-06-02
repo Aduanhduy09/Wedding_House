@@ -1,5 +1,6 @@
-﻿@{
-    // 🌟 ĐỨT LIÊN KẾT LAYOUT: Trang này dành cho khách xem công khai, không dùng chung khung Sidebar tối của Admin
+﻿
+@{
+    // ĐỨT LIÊN KẾT LAYOUT: Trang này dành cho khách xem công khai, không dùng chung khung Sidebar tối của Admin
     Layout = null;
 }
 
@@ -830,7 +831,7 @@
                         Mỗi khoảnh khắc tại Wedding House là một trang thơ — nơi tình yêu được tôn vinh bằng không gian sang trọng, ẩm thực tinh tế và dịch vụ tận tâm.
                     </p>
                     <div class="hero-cta">
-                        <a href="/Taikhoan/Login" class="btn btn-gold">
+                        <a href="/Taikhoan/Login" id="btnHeroBooking" class="btn btn-gold">
                             <i class="bi bi-calendar-heart me-2"></i>Đặt Tiệc Ngay
                         </a>
                         <a href="#saloons" class="btn btn-outline-gold">
@@ -869,59 +870,9 @@
                 <p class="section-desc">Không gian được thiết kế tỉ mỉ, toát lên vẻ đẳng cấp và lãng mạn — xứng đáng với ngày trọng đại nhất trong cuộc đời bạn.</p>
             </div>
 
-            <div class="row g-4">
-                <div class="col-lg-4 reveal reveal-delay-1">
-                    <div class="hall-card">
-                        <div class="hall-card-img">
-                            <img src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&q=80" alt="Sảnh Diamond" />
-                        </div>
-                        <div class="hall-card-body">
-                            <span class="hall-badge">Cao cấp nhất</span>
-                            <h3 class="hall-name">Sảnh Diamond</h3>
-                            <div class="hall-meta">
-                                <span><i class="bi bi-people me-1"></i>500 khách</span>
-                                <span><i class="bi bi-rulers me-1"></i>1.200 m²</span>
-                            </div>
-                            <p class="hall-price">Từ 45.000.000 VNĐ / tiệc</p>
-                            <a href="/Taikhoan/Login" class="btn-detail">Xem chi tiết <i class="bi bi-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 reveal reveal-delay-2">
-                    <div class="hall-card">
-                        <div class="hall-card-img">
-                            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="Sảnh Ruby" />
-                        </div>
-                        <div class="hall-card-body">
-                            <span class="hall-badge">Phổ biến</span>
-                            <h3 class="hall-name">Sảnh Ruby</h3>
-                            <div class="hall-meta">
-                                <span><i class="bi bi-people me-1"></i>350 khách</span>
-                                <span><i class="bi bi-rulers me-1"></i>850 m²</span>
-                            </div>
-                            <p class="hall-price">Từ 28.000.000 VNĐ / tiệc</p>
-                            <a href="/Taikhoan/Login" class="btn-detail">Xem chi tiết <i class="bi bi-arrow-right"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4 reveal reveal-delay-3">
-                    <div class="hall-card">
-                        <div class="hall-card-img">
-                            <img src="https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&q=80" alt="Sảnh Emerald" />
-                        </div>
-                        <div class="hall-card-body">
-                            <span class="hall-badge">Lãng mạn</span>
-                            <h3 class="hall-name">Sảnh Emerald</h3>
-                            <div class="hall-meta">
-                                <span><i class="bi bi-people me-1"></i>200 khách</span>
-                                <span><i class="bi bi-rulers me-1"></i>520 m²</span>
-                            </div>
-                            <p class="hall-price">Từ 18.000.000 VNĐ / tiệc</p>
-                            <a href="/Taikhoan/Login" class="btn-detail">Xem chi tiết <i class="bi bi-arrow-right"></i></a>
-                        </div>
-                    </div>
+            <div class="row g-4" id="saloonsContainer">
+                <div class="text-center w-100 py-4 text-muted small">
+                    <span class="spinner-border spinner-border-sm me-2 text-warning"></span> Đang tải danh sách sảnh tiệc cao cấp...
                 </div>
             </div>
         </div>
@@ -935,66 +886,14 @@
                 <p class="section-desc">Mỗi món ăn là một tuyệt tác được chế biến bởi đội ngũ đầu bếp hàng đầu — mang đến hương vị khó quên cho đêm tiệc của bạn.</p>
             </div>
 
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-3 reveal reveal-delay-1">
-                    <div class="dish-card">
-                        <div class="dish-img-wrap">
-                            <img src="https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=600&q=80" alt="Khai vị" />
-                        </div>
-                        <div class="dish-body">
-                            <span class="dish-tag">Khai vị</span>
-                            <h4 class="dish-name">Súp Bào Ngư Cao Cấp</h4>
-                            <p class="dish-desc">Hương vị thanh tao từ bào ngư Nhật Bản, hầm cùng nấm truffle trắng.</p>
-                            <div class="dish-price">180.000 VNĐ / người</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-3 reveal reveal-delay-2">
-                    <div class="dish-card">
-                        <div class="dish-img-wrap">
-                            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80" alt="Món chính" />
-                        </div>
-                        <div class="dish-body">
-                            <span class="dish-tag">Món chính</span>
-                            <h4 class="dish-name">Bò Wagyu Sốt Rượu Vang</h4>
-                            <p class="dish-desc">Thăn bò Wagyu A5 nướng vừa tới, sốt vang đỏ Bordeaux thượng hạng.</p>
-                            <div class="dish-price">450.000 VNĐ / người</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-3 reveal reveal-delay-3">
-                    <div class="dish-card">
-                        <div class="dish-img-wrap">
-                            <img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&q=80" alt="Hải sản" />
-                        </div>
-                        <div class="dish-body">
-                            <span class="dish-tag">Món chính</span>
-                            <h4 class="dish-name">Hải Sản Hấp Rượu Trắng</h4>
-                            <p class="dish-desc">Tôm hùm, cua hoàng đế, nghêu Pháp hấp tỏi và rượu vang Sauvignon Blanc.</p>
-                            <div class="dish-price">380.000 VNĐ / người</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-6 col-lg-3 reveal reveal-delay-3">
-                    <div class="dish-card">
-                        <div class="dish-img-wrap">
-                            <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=600&q=80" alt="Tráng miệng" />
-                        </div>
-                        <div class="dish-body">
-                            <span class="dish-tag">Tráng miệng</span>
-                            <h4 class="dish-name">Bánh Cưới Opera 5 Tầng</h4>
-                            <p class="dish-desc">Bánh mousse chocolate Valrhona 72%, nhân hạnh nhân caramel mặn và dâu tây Đà Lạt.</p>
-                            <div class="dish-price">1.800.000 VNĐ / bánh</div>
-                        </div>
-                    </div>
+            <div class="row g-4" id="dishesContainer">
+                <div class="text-center w-100 py-4 text-white-50 small">
+                    <span class="spinner-border spinner-border-sm me-2 text-warning"></span> Đang kết nối nghệ thuật ẩm thực...
                 </div>
             </div>
 
             <div class="text-center mt-5 reveal">
-                <a href="/Taikhoan/Login" id="btnViewMenu" class="btn btn-gold px-5">
+                <a href="/Home/ThucDon" id="btnViewMenu" class="btn btn-gold px-5">
                     <i class="bi bi-book me-2"></i>Xem Toàn Bộ Thực Đơn
                 </a>
             </div>
@@ -1091,7 +990,8 @@
 
             <hr class="footer-divider" />
             <p class="footer-bottom">
-                © 2026 Wedding House. Bảo lưu mọi quyền. Thiết kế với <i class="bi bi-heart-fill" style="color:var(--gold)"></i> tại Việt Nam.
+                © 2026 Wedding House.
+                Bảo lưu mọi quyền. Thiết kế với <i class="bi bi-heart-fill" style="color:var(--gold)"></i> tại Việt Nam.
             </p>
         </div>
     </footer>
@@ -1099,66 +999,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('token');
-        const username = localStorage.getItem('username');
-
-        // Khách hàng đã đăng nhập thành công từ trước
-        if (token && username) {
-        const authSection = document.getElementById('navAuthSection');
-        if (authSection) {
-        // Thay nút Login thành lời chào và tạo nút Thoát có id="btnCustomerLogout"
-        authSection.innerHTML = `
-        <div class="d-flex align-items-center gap-3">
-        <span class="text-white-50 small" style="letter-spacing: 0.05em; text-transform: uppercase;">
-        <i class="bi bi-person-circle text-warning me-1"></i> Xin chào,
-        <strong class="text-white">${username}</strong>
-        </span>
-        <a href="#" id="btnCustomerLogout" class="btn-auth" style="padding: 0.35rem 0.9rem; font-size: 0.75rem;">
-        <i class="bi bi-box-arrow-right"></i> Thoát
-        </a>
-        </div>
-        `;
-        }
-
-        // 🔒 BẮT SỰ KIỆN CLICK TRỰC TIẾP CHO NÚT THOÁT (Xóa sạch bộ nhớ, giải quyết lỗi tự đăng nhập)
-        document.getElementById('btnCustomerLogout')?.addEventListener('click', (e) => {
-        e.preventDefault();
-
-        localStorage.clear();      // Xóa Token và Username trong bộ nhớ dài hạn
-        sessionStorage.clear();    // Dọn sạch phiên làm việc hiện tại
-
-        alert('Đã đăng xuất tài khoản thành công!');
-
-        // Điều hướng tải lại trang chủ sạch sẽ không chứa token
-        window.location.href = '/Home/Index';
-        });
-
-        // 🛠️ SỬA LỖI NÚT THỰC ĐƠN: Cuộn mượt tại chỗ, chặn chuyển hướng sang Login
-        const btnViewMenu = document.getElementById('btnViewMenu');
-        if (btnViewMenu) {
-        btnViewMenu.setAttribute('href', '#culinary');
-        btnViewMenu.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('culinary')?.scrollIntoView({ behavior: 'smooth' });
-        alert('Hệ thống đang chuẩn bị tải toàn bộ danh sách thực đơn 100+ món ăn đặc sắc cho bạn...');
-        });
-        }
-
-        // 🏢 SỬA LỖI NÚT SẢNH TIỆC: Giữ chân khách lại khu vực sảnh tiệc, chặn đá về Login
-        const detailButtons = document.querySelectorAll('.btn-detail');
-        detailButtons.forEach(btn => {
-        btn.setAttribute('href', '#saloons');
-        btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('saloons')?.scrollIntoView({ behavior: 'smooth' });
-        alert('Hệ thống đang kết nối dữ liệu để tải hình ảnh mô phỏng không gian và lịch trống của sảnh tiệc này...');
-        });
-        });
-        }
-        });
-
-        // ── GIỮ NGUYÊN ĐOẠN CODE HIỆU ỨNG CUỘN TRANG GỐC CỦA BẠN DƯỚI ĐÂY ──
         const observer = new IntersectionObserver((entries) => {
         entries.forEach(e => {
         if (e.isIntersecting) {
@@ -1168,9 +1008,149 @@
         });
         }, { threshold: 0.12 });
 
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        const fullName = localStorage.getItem('fullName') || username;
 
-        // Navbar shrink on scroll
+        // 🌟 ĐỒNG BỘ ĐỔI HƯỚNG NÚT ĐẶT TIỆC CHÍNH XÁC KHI ĐÃ ĐĂNG NHẬP
+        const btnHeroBooking = document.getElementById('btnHeroBooking');
+
+        if (token && username) {
+        const authSection = document.getElementById('navAuthSection');
+        if (authSection) {
+        authSection.innerHTML = `
+        <div class="d-flex align-items-center gap-3">
+        <span class="text-white-50 small" style="letter-spacing: 0.05em; text-transform: uppercase;">
+        <i class="bi bi-person-circle text-warning me-1"></i> Xin chào,
+        <strong class="text-white">${fullName}</strong>
+        </span>
+
+        <a href="/Home/TaiKhoan" class="btn btn-sm text-white-50 border-0 p-0 d-flex align-items-center gap-1" title="Cài đặt tài khoản" style="font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.25s;" onmouseover="this.classList.replace('text-white-50', 'text-warning')" onmouseout="this.classList.replace('text-warning', 'text-white-50')">
+        <i class="bi bi-gear-fill" style="color: var(--gold); font-size: 0.95rem;"></i> Cài đặt
+        </a>
+
+        <a href="#" id="btnCustomerLogout" class="btn-auth" style="padding: 0.35rem 0.9rem; font-size: 0.75rem;">
+        <i class="bi bi-box-arrow-right"></i> Thoát
+        </a>
+        </div>
+        `;
+        }
+
+        // Nếu tìm thấy token hợp lệ, chuyển hướng nút Đặt Tiệc Ngay sang trang form nghiệp vụ
+        if (btnHeroBooking) {
+        btnHeroBooking.setAttribute('href', '/Home/DatTiec');
+        }
+
+        document.getElementById('btnCustomerLogout')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.clear();
+        sessionStorage.clear();
+        alert('Đã đăng xuất tài khoản thành công!');
+        window.location.href = '/Home/Index';
+        });
+        }
+
+        loadSaloonsFromServer(token);
+        loadDishesFromServer();
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+
+        async function loadSaloonsFromServer(isLoggedIn) {
+        try {
+        const response = await fetch('/api/PublicData/saloons');
+        if (!response.ok) throw new Error('Không thể kết nối API Sảnh tiệc');
+        const saloons = await response.json();
+
+        const container = document.getElementById('saloonsContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        saloons.forEach((sanh, index) => {
+        const tenSanh = sanh.tenSanh || sanh.TenSanh || 'Sảnh Tiệc';
+        const sucChua = sanh.sucChua || sanh.SucChua || 0;
+        const dienTich = sanh.dienTich || sanh.DienTich || 0;
+        const giaThue = sanh.giaThue || sanh.GiaThue || 0;
+        const hinhAnh = sanh.hinhanh || sanh.HinhAnh || 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&q=80';
+
+        container.innerHTML += `
+        <div class="col-lg-4 reveal reveal-delay-${(index % 3) + 1}">
+        <div class="hall-card">
+        <div class="hall-card-img">
+        <img src="${hinhAnh}" alt="${tenSanh}" />
+        </div>
+        <div class="hall-card-body">
+        <span class="hall-badge">${sucChua >= 500 ? 'VVIP Diamond' : 'Premium'}</span>
+        <h3 class="hall-name">${tenSanh}</h3>
+        <div class="hall-meta">
+        <span><i class="bi bi-people me-1"></i>${sucChua} khách</span>
+        <span><i class="bi bi-rulers me-1"></i>${dienTich} m²</span>
+        </div>
+        <p class="hall-price">Từ ${giaThue.toLocaleString('vi-VN')} VNĐ / tiệc</p>
+        <a href="/Home/SanhTiec" class="btn-detail">Xem chi tiết <i class="bi bi-arrow-right"></i></a>
+        </div>
+        </div>
+        </div>
+        `;
+        });
+
+        container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        } catch (error) {
+        console.error('Lỗi load sảnh tiệc:', error);
+        document.getElementById('saloonsContainer').innerHTML = `
+        <div class="text-center w-100 py-3 text-danger small">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> Không thể kết nối với dữ liệu sảnh tiệc thực tế.
+        </div>`;
+        }
+        }
+
+        async function loadDishesFromServer() {
+        try {
+        const response = await fetch('/api/PublicData/dishes');
+        if (!response.ok) throw new Error('Không thể kết nối API Món ăn');
+        const dishes = await response.json();
+
+        const container = document.getElementById('dishesContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        dishes.slice(0, 4).forEach((mon, index) => {
+        const tenMon = mon.tenMon || mon.TenMon || 'Món ăn cao cấp';
+        const loaiMon = mon.loaiMon || mon.LoaiMon || 'Món Chính';
+        const moTa = mon.moTa || mon.MoTa || 'Hương vị thượng hạng được tinh tuyển bởi đầu bếp trưởng Wedding House.';
+        const donGia = mon.donGia || mon.DonGia || 0;
+        const hinhAnh = mon.hinhanh || mon.HinhAnh || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80';
+
+        container.innerHTML += `
+        <div class="col-md-6 col-lg-3 reveal reveal-delay-${(index % 4) + 1}">
+        <div class="dish-card">
+        <div class="dish-img-wrap">
+        <img src="${hinhAnh}" alt="${tenMon}" />
+        </div>
+        <div class="dish-body">
+        <span class="dish-tag">${loaiMon}</span>
+        <h4 class="dish-name">${tenMon}</h4>
+        <p class="dish-desc">${moTa}</p>
+        <div class="dish-price">${donGia.toLocaleString('vi-VN')} VNĐ / người</div>
+        </div>
+        </div>
+        </div>
+        `;
+        });
+
+        container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        } catch (error) {
+        console.error('Lỗi load thực đơn:', error);
+        document.getElementById('dishesContainer').innerHTML = `
+        <div class="text-center w-100 py-3 text-warning small">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> Không thể kết nối với danh sách ẩm thực thực tế.
+        </div>`;
+        }
+        }
+
         const navbar = document.querySelector('.wh-navbar');
         window.addEventListener('scroll', () => {
         if (window.scrollY > 60) {

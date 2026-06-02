@@ -1,0 +1,232 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Không Gian Sự Kiện Luxury — Wedding House</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+            :root {
+                --gold: #C9A84C;
+                --navy: #0E1B2E;
+                --ivory: #FAF7F2;
+                --font-display: 'Cormorant Garamond', Georgia, serif;
+                --font-body: 'Jost', sans-serif;
+            }
+
+            body {
+                font-family: var(--font-body);
+                background: var(--ivory);
+                color: var(--navy);
+            }
+
+            .header-banner {
+                background: linear-gradient(rgba(14,27,46,0.85), rgba(14,27,46,0.85)), url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1920&q=80') center/cover;
+                padding: 6rem 0 4rem;
+                text-align: center;
+                color: #fff;
+                border-bottom: 3px solid var(--gold);
+            }
+
+            .header-title {
+                font-family: var(--font-display);
+                font-size: 3.5rem;
+                font-style: italic;
+                color: var(--gold);
+            }
+
+            .filter-btn {
+                background: transparent;
+                color: var(--navy);
+                border: 1px solid var(--gold);
+                padding: 0.5rem 1.5rem;
+                text-transform: uppercase;
+                font-size: 0.8rem;
+                letter-spacing: 0.1em;
+                border-radius: 0;
+                transition: all 0.3s;
+            }
+
+                .filter-btn:hover, .filter-btn.active {
+                    background: var(--navy);
+                    color: var(--gold);
+                    border-color: var(--navy);
+                }
+
+            .hall-detail-card {
+                background: #fff;
+                border: 1px solid rgba(14,27,46,0.08);
+                box-shadow: 0 4px 25px rgba(14,27,46,0.05);
+                transition: all 0.3s;
+            }
+
+                .hall-detail-card:hover {
+                    transform: translateY(-4px);
+                    box-shadow: 0 12px 40px rgba(14,27,46,0.12);
+                }
+
+            .hall-img-wrapper {
+                position: relative;
+                height: 240px;
+                overflow: hidden;
+            }
+
+                .hall-img-wrapper img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.6s;
+                }
+
+            .hall-detail-card:hover .hall-img-wrapper img {
+                transform: scale(1.05);
+            }
+
+            .hall-title {
+                font-family: var(--font-display);
+                font-size: 1.8rem;
+                font-weight: 600;
+            }
+
+            .meta-box {
+                background: var(--ivory);
+                padding: 0.75rem;
+                font-size: 0.85rem;
+                color: #555;
+            }
+
+            .price-tag {
+                font-family: var(--font-display);
+                font-size: 1.4rem;
+                color: var(--gold);
+                font-style: italic;
+                font-weight: 600;
+            }
+    </style>
+</head>
+<body>
+
+    <!-- BACK TO HOME -->
+    <div class="container pt-4">
+        <a href="/Home/Index" class="btn btn-outline-dark btn-sm rounded-0">
+            <i class="bi bi-arrow-left"></i> Quay lại Trang Chủ
+        </a>
+    </div>
+
+    <!-- BANNER -->
+    <header class="header-banner mt-3">
+        <div class="container">
+            <h1 class="header-title">Không Gian Kiến Trúc Hoàng Gia</h1>
+            <p class="text-white-50 max-width-600 mx-auto mt-2">Nơi chứng kiến thời khắc thiêng liêng với những đại sảnh lộng lẫy, sức chứa đa dạng từ tiệc ấm cúng đến đại tiệc xa hoa.</p>
+
+            <!-- FILTER TABS -->
+            <div class="d-flex justify-content-center gap-2 mt-4 flex-wrap">
+                <button class="btn filter-btn active" onclick="filterHalls('Tất cả', this)">Tất cả sảnh</button>
+                <button class="btn filter-btn" onclick="filterHalls('VIP', this)">Đại Sảnh (Sức chứa lớn)</button>
+                <button class="btn filter-btn" onclick="filterHalls('STANDARD', this)">Sảnh Tiêu Chuẩn</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="container py-5">
+        <div class="row g-4" id="fullSaloonsContainer">
+            <div class="text-center w-100 py-5">
+                <span class="spinner-border text-primary"></span>
+                <p class="mt-2 text-muted">Hệ thống đang đồng bộ kiến trúc không gian...</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+            let allSaloonsData = [];
+
+            document.addEventListener('DOMContentLoaded', async () => {
+                try {
+                    const response = await fetch('/api/PublicData/saloons');
+                    if (!response.ok) throw new Error('Không thể tải danh sách sảnh tiệc');
+                    allSaloonsData = await response.json();
+
+                    renderHalls(allSaloonsData);
+                } catch (error) {
+                    console.error(error);
+                    document.getElementById('fullSaloonsContainer').innerHTML = `<div class='text-center text-danger'>Không thể kết nối danh sách sảnh tiệc lúc này.</div>`;
+                }
+            });
+
+            function renderHalls(hallsList) {
+                const container = document.getElementById('fullSaloonsContainer');
+                if (!container) return;
+                container.innerHTML = '';
+
+                if (hallsList.length === 0) {
+                    container.innerHTML = `<div class='text-center text-muted py-5 w-100'>Hiện chưa có sảnh cưới nào phù hợp phân loại này.</div>`;
+                    return;
+                }
+
+                hallsList.forEach(sanh => {
+                    const tenSanh = sanh.tenSanh || 'Sảnh Tiệc';
+                    const loaiSanh = sanh.loaiSanh || 'C';
+                    const sucChua = sanh.sucChua || 0;
+                    const dienTich = sanh.dienTich || 0;
+                    const giaThue = sanh.giaThue || 0;
+                    const ghiChu = sanh.ghiChu || 'Không gian sang trọng lịch lãm, dịch vụ chuẩn quốc tế.';
+                    const hinhAnh = sanh.hinhanh || 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&q=80';
+
+                    container.innerHTML += `
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card hall-detail-card rounded-0">
+                                <div class="hall-img-wrapper">
+                                    <img src="${hinhAnh}" class="card-img-top rounded-0" alt="${tenSanh}">
+                                </div>
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h4 class="hall-title text-navy m-0">${tenSanh}</h4>
+                                        <span class="badge bg-dark text-warning rounded-0">Loại ${loaiSanh}</span>
+                                    </div>
+                                    <p class="text-muted small mb-3" style="min-height:40px;">${ghiChu}</p>
+
+                                    <div class="row g-2 text-center mb-3">
+                                        <div class="col-6">
+                                            <div class="meta-box"><i class="bi bi-people me-2 text-warning"></i>${sucChua} Khách</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="meta-box"><i class="bi bi-rulers me-2 text-warning"></i>${dienTich} m²</div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+                                        <span class="small text-muted text-uppercase tracking-wider">Giá thuê trọn gói</span>
+                                        <span class="price-tag">${giaThue.toLocaleString('vi-VN')} VNĐ</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            function filterHalls(type, btn) {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                if (type === 'Tất cả') {
+                    renderHalls(allSaloonsData);
+                } else if (type === 'VIP') {
+                    // Lọc các sảnh lớn loại A hoặc sức chứa >= 500 khách
+                    const filtered = allSaloonsData.filter(s => s.loaiSanh === 'A' || s.loaiSanh === 'VVIP' || s.sucChua >= 500);
+                    renderHalls(filtered);
+                } else {
+                    // Lọc sảnh phổ thông loại B, C
+                    const filtered = allSaloonsData.filter(s => s.loaiSanh !== 'A' && s.loaiSanh !== 'VVIP' && s.sucChua < 500);
+                    renderHalls(filtered);
+                }
+            }
+    </script>
+</body>
+</html>

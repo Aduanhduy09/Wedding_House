@@ -56,6 +56,19 @@ namespace Wedding_House.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
+            // 🌟 RÀO CHẮN 1: Kiểm tra xem Email này đã có ai dùng chưa
+            var isEmailExist = await _context.Khachhangs.AnyAsync(k => k.Email == model.Email);
+            if (isEmailExist)
+            {
+                return BadRequest(new { message = "Email này đã được sử dụng bởi một tài khoản khác!" });
+            }
+
+            // 🌟 RÀO CHẮN 2: Kiểm tra xem Số điện thoại này đã có ai dùng chưa
+            var isPhoneExist = await _context.Khachhangs.AnyAsync(k => k.DienThoai == model.DienThoai);
+            if (isPhoneExist)
+            {
+                return BadRequest(new { message = "Số điện thoại này đã được đăng ký hệ thống!" });
+            }
             // Tìm kiếm tài khoản xem đã tồn tại tên đăng nhập này chưa
             var existingUser = await _context.Taikhoans.FirstOrDefaultAsync(u => u.TenDangNhap == model.Username);
 
