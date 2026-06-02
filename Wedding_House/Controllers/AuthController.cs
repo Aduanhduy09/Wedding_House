@@ -5,6 +5,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Wedding_House.Models;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace Wedding_House.Controllers
 {
@@ -21,72 +23,180 @@ namespace Wedding_House.Controllers
             _configuration = configuration;
         }
 
-        // Khai báo Model nhận dữ liệu đăng nhập từ Frontend gửi lên
-        public class LoginModel
+        // ==========================================
+        // 1. HÀM TRỢ GIÚP: GỬI EMAIL QUA CỔNG GOOGLE
+        // ==========================================
+        private void SendEmailOTP(string toEmail, string otpCode)
         {
-            public string Username { get; set; } = null!;
-            public string Password { get; set; } = null!;
+            var message = new MimeMessage();
+            // ĐÃ SỬA: Đồng bộ email người gửi trùng với tài khoản authenticate bên dưới
+            message.From.Add(new MailboxAddress("Nhà hàng Wedding House", "weddinghouseadmin@gmail.com"));
+            message.To.Add(new MailboxAddress("", toEmail));
+            message.Subject = "Mã OTP Xác Thực Tài Khoản Wedding House";
+
+            message.Body = new TextPart("html")
+            {
+                Text = $"<h3>Cảm ơn bạn đã đăng ký!</h3>" +
+                       $"<p>Mã OTP kích hoạt tài khoản của bạn là: <b style='color:red; font-size:20px;'>{otpCode}</b></p>" +
+                       $"<p>Mã này có hiệu lực trong vòng 5 phút.</p>"
+            };
+
+            using (var client = new SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                client.Authenticate("weddinghouseadmin@gmail.com", "pwof ydld xqgf jehc");
+                client.Send(message);
+                client.Disconnect(true);
+            }
         }
 
+        // ==========================================
+        // 2. API ĐĂNG KÝ (ĐÃ TÍCH HỢP XOÁ TÀI KHOẢN RÁC)
+        // ==========================================
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        {
+            // Tìm kiếm tài khoản xem đã tồn tại tên đăng nhập này chưa
+            var existingUser = await _context.Taikhoans.FirstOrDefaultAsync(u => u.TenDangNhap == model.Username);
+
+            if (existingUser != null)
+            {
+                // Trường hợp 1: Tài khoản đã kích hoạt (IsConfirmed = 1) hoặc dạng đặc biệt (NULL) -> Chặn luôn
+                if (existingUser.IsConfirmed == true || existingUser.IsConfirmed == null)
+                {
+                    return BadRequest(new { message = "Tài khoản này đã tồn tại và đã được xác thực trong hệ thống!" });
+                }
+                // Trường hợp 2: Tài khoản đã có nhưng CHƯA kích hoạt (IsConfirmed = 0) -> Tiến hành dọn dẹp rác
+                else
+                {
+                    // 1. Tìm và xóa Khách hàng liên quan trước để tránh lỗi ràng buộc khóa ngoại (FK)
+                    var existingKhach = await _context.Khachhangs.FirstOrDefaultAsync(k => k.MaTaiKhoan == existingUser.MaTaiKhoan);
+                    if (existingKhach != null)
+                    {
+                        _context.Khachhangs.Remove(existingKhach);
+                    }
+
+                    // 2. Xóa tài khoản chưa kích hoạt cũ
+                    _context.Taikhoans.Remove(existingUser);
+
+                    // 3. Lưu thay đổi tạm thời để giải phóng Username hoàn toàn
+                    await _context.SaveChangesAsync();
+                }
+            }
+
+            // ---- HỆ THỐNG TIẾP TỤC TẠO TÀI KHOẢN MỚI SAU KHI ĐÃ DỌN SẠCH RÁC ----
+            string randomOtp = new Random().Next(100000, 999999).ToString();
+
+            var taiKhoanMoi = new Taikhoan
+            {
+                TenDangNhap = model.Username,
+                MatKhau = BCrypt.Net.BCrypt.HashPassword(model.Password),
+                VaiTro = "KhachHang",
+                IsConfirmed = false, // Mặc định bằng 0 (False), phải qua OTP mới kích hoạt
+                OtpCode = randomOtp,
+                OtpExpired = DateTime.Now.AddMinutes(5) // Hết hạn sau 5 phút
+            };
+            _context.Taikhoans.Add(taiKhoanMoi);
+            await _context.SaveChangesAsync();
+
+            var khachHangMoi = new Khachhang
+            {
+                HoTen = model.HoTen,
+                DienThoai = model.DienThoai,
+                Email = model.Email,
+                MaTaiKhoan = taiKhoanMoi.MaTaiKhoan
+            };
+            _context.Khachhangs.Add(khachHangMoi);
+            await _context.SaveChangesAsync();
+
+            // Gửi email chứa mã OTP mới về hòm thư của khách
+            SendEmailOTP(model.Email, randomOtp);
+
+            return Ok(new { message = "Đăng ký thành công! Vui lòng kiểm tra Gmail để lấy mã OTP xác thực." });
+        }
+
+        // ==========================================
+        // 3. API XÁC THỰC MÃ OTP (KÍCH HOẠT TÀI KHOẢN)
+        // ==========================================
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpModel model)
+        {
+            var user = await _context.Taikhoans
+                .FirstOrDefaultAsync(u => u.TenDangNhap == model.Username);
+
+            if (user == null) return NotFound(new { message = "Không tìm thấy tài khoản!" });
+
+            if (user.OtpCode != model.OtpCode) return BadRequest(new { message = "Mã OTP không chính xác!" });
+
+            if (user.OtpExpired < DateTime.Now) return BadRequest(new { message = "Mã OTP đã hết hạn!" });
+
+            // Nếu mọi thứ đều đúng -> Kích hoạt tài khoản thành công, xóa sạch dấu vết OTP
+            user.IsConfirmed = true;
+            user.OtpCode = null;
+            user.OtpExpired = null;
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Xác thực tài khoản thành công! Bây giờ bạn đã có thể đăng nhập." });
+        }
+
+        // ==========================================
+        // 4. API ĐĂNG NHẬP (CÓ CHECK XÁC THỰC EMAIL)
+        // ==========================================
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            // 1. Kiểm tra tài khoản dưới Database 
             var taiKhoan = await _context.Taikhoans
-                .FirstOrDefaultAsync(u => u.TenDangNhap == model.Username && u.MatKhau == model.Password);
+                .FirstOrDefaultAsync(u => u.TenDangNhap == model.Username);
 
-            if (taiKhoan == null)
+            if (taiKhoan == null || !BCrypt.Net.BCrypt.Verify(model.Password, taiKhoan.MatKhau))
             {
                 return Unauthorized(new { message = "Tài khoản hoặc mật khẩu không chính xác!" });
             }
 
-            // 2. Nếu đúng tài khoản, tiến hành ký và cấp "Thẻ thông hành" JWT Token
+            // CHẶN KHÔNG CHO LOGIN NẾU CHƯA XÁC THỰC EMAIL (ISCONFIRMED == FALSE HOẶC 0)
+            if (taiKhoan.IsConfirmed == false)
+            {
+                return BadRequest(new { message = "Tài khoản của bạn chưa được xác thực bằng mã OTP trên Gmail!" });
+            }
+
+            // --- Giữ nguyên đoạn tạo Token JWT bên dưới của bạn ---
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? string.Empty);
-
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[]
-                {
+                Subject = new ClaimsIdentity(new[] {
                     new Claim(ClaimTypes.Name, taiKhoan.TenDangNhap),
-                    new Claim(ClaimTypes.Role, taiKhoan.VaiTro ?? "NhanVien") // Đóng dấu Vai trò của User vào token (Admin/NhanVien)
+                    new Claim(ClaimTypes.Role, taiKhoan.VaiTro ?? "NhanVien")
                 }),
-                Expires = DateTime.UtcNow.AddHours(4), // Token có giá trị trong 4 tiếng
+                Expires = DateTime.UtcNow.AddHours(4),
                 Issuer = _configuration["Jwt:Issuer"],
                 Audience = _configuration["Jwt:Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            // 3. Trả Token và vai trò về cho Frontend
-            return Ok(new
-            {
-                Token = tokenString,
-                Username = taiKhoan.TenDangNhap,
-                Role = taiKhoan.VaiTro
-            });
+            return Ok(new { Token = tokenString, Username = taiKhoan.TenDangNhap, Role = taiKhoan.VaiTro });
         }
-        [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] Taikhoan model)
-        {
-            // 1. Kiểm tra xem tên đăng nhập đã tồn tại chưa
-            var checkExit = await _context.Taikhoans.AnyAsync(u => u.TenDangNhap == model.TenDangNhap);
-            if (checkExit)
-            {
-                return BadRequest(new { message = "Tài khoản này đã tồn tại trong hệ thống!" });
-            }
+    }
 
-            // 2. Gán quyền mặc định cho tài khoản đăng ký online là Khách hàng
-            model.VaiTro = "KhachHang";
-
-            // LƯU Ý: Tạm thời để mật khẩu thô để test đồng bộ với hàm Login cũ. 
-            // Khi nào cài BCrypt nâng cấp bảo mật sau.
-            _context.Taikhoans.Add(model);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Đăng ký tài khoản thành công!" });
-        }
+    // Các lớp Model bổ sung nhận dữ liệu dữ nguyên
+    public class VerifyOtpModel
+    {
+        public string Username { get; set; } = null!;
+        public string OtpCode { get; set; } = null!;
+    }
+    public class RegisterModel
+    {
+        public string Username { get; set; } = null!;
+        public string Password { get; set; } = null!;
+        public string HoTen { get; set; } = null!;
+        public string DienThoai { get; set; } = null!;
+        public string Email { get; set; } = null!;
+    }
+    public class LoginModel
+    {
+        public string Username { get; set; } = null!;
+        public string Password { get; set; } = null!;
     }
 }

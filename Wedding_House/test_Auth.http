@@ -1,12 +1,24 @@
 @hostname = https://localhost:7002
 
-### 1. API ĐĂNG NHẬP ĐỂ LẤY TOKEN
-POST {{hostname}}/api/auth/login
+### ### A. ĐĂNG KÝ (Nhớ điền Email THẬT của bạn để nhận mã nhé)
+POST {{hostname}}/api/auth/register
 Content-Type: application/json
 
 {
-  "username": "aduanhduy",
-  "password": "aduanhduydeptrai09"
+  "username": "duy_otp_test",
+  "password": "password123",
+  "hoTen": "Trần Hoàng Duy",
+  "dienThoai": "0329393939",
+  "email": "hoangduy253cuxaduong@gmail.com"
+}
+
+### B. XÁC THỰC MÃ (Mở điện thoại/máy tính lên check hòm thư và lấy mã điền vào đây)
+POST {{hostname}}/api/auth/verify-otp
+Content-Type: application/json
+
+{
+  "username": "duy_otp_test",
+  "otpCode": "166613"
 }
 
 

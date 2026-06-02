@@ -339,3 +339,7 @@ C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\ref\Wedd
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\Wedding_House.sourcelink.json
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Duy\source\repos\Wedding_House\Wedding_House\bin\Debug\net10.0\BCrypt-Net-Next.dll
+C:\Users\Duy\source\repos\Wedding_House\Wedding_House\bin\Debug\net10.0\BouncyCastle.Cryptography.dll
+C:\Users\Duy\source\repos\Wedding_House\Wedding_House\bin\Debug\net10.0\MailKit.dll
+C:\Users\Duy\source\repos\Wedding_House\Wedding_House\bin\Debug\net10.0\MimeKit.dll

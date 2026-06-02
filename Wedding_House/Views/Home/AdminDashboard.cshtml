@@ -1,0 +1,683 @@
+﻿
+@{
+    ViewData["Title"] = "Bảng Điều Khiển Quản Trị";
+}
+
+<!-- ── 1. TOÀN BỘ CSS TÙY BIẾN CAO CẤP (BÓC TỪ DASHBOARD.TXT) ── -->
+<style>
+    :root {
+        /* Đồng bộ các biến màu sắc cốt lõi của không gian Dashboard */
+        --gold: #c9963c;
+        --gold-light: rgba(201,150,60,.10);
+        --success: #16a34a;
+        --success-light: rgba(22,163,74,.10);
+        --warning: #d97706;
+        --warning-light: rgba(217,119,6,.10);
+        --danger: #dc2626;
+        --danger-light: rgba(220,38,38,.10);
+        --purple: #7c3aed;
+        --purple-light: rgba(124,58,237,.10);
+        --radius: 14px;
+    }
+
+    /* Page header */
+    .page-header .greeting {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 1.85rem;
+        font-weight: 700;
+        letter-spacing: -.5px;
+        margin: 0;
+    }
+
+    .page-header .sub {
+        font-size: .84rem;
+        color: var(--text-muted);
+        margin: .2rem 0 0;
+    }
+
+    .page-header .date-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: .4rem .9rem;
+        font-size: .8rem;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    /* Metric Cards */
+    .metric-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.4rem 1.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: transform .2s, box-shadow .2s;
+    }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(15,23,42,.08);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+    .mc-blue::before {
+        background: var(--accent);
+    }
+
+    .mc-gold::before {
+        background: var(--gold);
+    }
+
+    .mc-green::before {
+        background: var(--success);
+    }
+
+    .mc-purple::before {
+        background: var(--purple);
+    }
+
+    .metric-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .metric-label {
+        font-size: .78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: var(--text-muted);
+        margin: 0 0 .3rem;
+    }
+
+    .metric-value {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 1.9rem;
+        font-weight: 700;
+        line-height: 1;
+        margin: 0 0 .5rem;
+    }
+
+    .metric-delta {
+        font-size: .78rem;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: .2rem;
+        padding: .18rem .55rem;
+        border-radius: 20px;
+    }
+
+    .delta-up {
+        background: var(--success-light);
+        color: var(--success);
+    }
+
+    .delta-down {
+        background: var(--danger-light);
+        color: var(--danger);
+    }
+
+    /* Section card */
+    .section-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+    }
+
+    .section-header {
+        padding: 1.1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .section-title {
+        font-weight: 600;
+        font-size: .95rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+    }
+
+        .section-title i {
+            color: var(--accent);
+        }
+
+    /* Table */
+    .wh-table {
+        margin: 0;
+    }
+
+        .wh-table thead th {
+            background: #f8fafc;
+            font-size: .73rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding: .75rem 1.2rem;
+        }
+
+        .wh-table tbody td {
+            padding: .85rem 1.2rem;
+            vertical-align: middle;
+            font-size: .875rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .wh-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .wh-table tbody tr:hover td {
+            background: #f8faff;
+        }
+
+    .customer-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(37,99,235,.10);
+        color: var(--accent);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .75rem;
+        font-weight: 700;
+        margin-right: .5rem;
+    }
+
+    .customer-name {
+        font-weight: 500;
+    }
+
+    /* Status badges */
+    .badge-status {
+        font-size: .72rem;
+        font-weight: 600;
+        padding: .3rem .7rem;
+        border-radius: 20px;
+        letter-spacing: .3px;
+    }
+
+    .badge-paid {
+        background: var(--success-light);
+        color: var(--success);
+    }
+
+    .badge-pending {
+        background: var(--warning-light);
+        color: var(--warning);
+    }
+
+    .badge-cancelled {
+        background: var(--danger-light);
+        color: var(--danger);
+    }
+
+    .btn-icon {
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .8rem;
+        border: 1px solid var(--border);
+        background: #fff;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all .15s;
+        text-decoration: none;
+    }
+
+        .btn-icon:hover {
+            color: var(--accent);
+            border-color: var(--accent);
+            background: rgba(37,99,235,.10);
+        }
+
+    /* Checklist */
+    .task-body {
+        padding: 1rem 1.5rem;
+    }
+
+    .task-item {
+        display: flex;
+        align-items: flex-start;
+        gap: .75rem;
+        padding: .7rem 0;
+        border-bottom: 1px solid #f1f5f9;
+    }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+    .task-check {
+        width: 18px;
+        height: 18px;
+        border: 2px solid var(--border);
+        border-radius: 5px;
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-top: 1px;
+        transition: all .15s;
+    }
+
+    .task-label {
+        font-size: .865rem;
+    }
+
+        .task-label.done {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+    .task-meta {
+        font-size: .75rem;
+        color: var(--text-muted);
+        margin-top: .15rem;
+    }
+
+    .task-priority {
+        font-size: .68rem;
+        padding: .15rem .5rem;
+        border-radius: 20px;
+        font-weight: 600;
+        margin-left: auto;
+        flex-shrink: 0;
+    }
+
+    .tp-high {
+        background: var(--danger-light);
+        color: var(--danger);
+    }
+
+    .tp-med {
+        background: var(--warning-light);
+        color: var(--warning);
+    }
+
+    .tp-low {
+        background: var(--success-light);
+        color: var(--success);
+    }
+
+    /* Availability grid */
+    .avail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: .6rem;
+        padding: 1rem 1.5rem 1.5rem;
+    }
+
+    .avail-slot {
+        border-radius: 10px;
+        padding: .75rem .9rem;
+        font-size: .8rem;
+        font-weight: 500;
+    }
+
+        .avail-slot .slot-name {
+            font-weight: 600;
+            font-size: .85rem;
+            margin-bottom: .2rem;
+        }
+
+        .avail-slot .slot-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: .35rem;
+        }
+
+    .slot-available {
+        background: var(--success-light);
+        color: var(--success);
+    }
+
+    .slot-busy {
+        background: var(--danger-light);
+        color: var(--danger);
+    }
+
+    .slot-maint {
+        background: var(--warning-light);
+        color: var(--warning);
+    }
+
+    /* Mini chart area */
+    .mini-chart {
+        padding: .5rem 1.5rem 1rem;
+    }
+
+    .chart-bars {
+        display: flex;
+        align-items: flex-end;
+        gap: .5rem;
+        height: 80px;
+    }
+
+    .chart-bar-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: .3rem;
+        flex: 1;
+    }
+
+    .chart-bar {
+        width: 100%;
+        border-radius: 5px 5px 0 0;
+        background: rgba(37,99,235,.10);
+        transition: background .2s;
+        cursor: pointer;
+        min-height: 4px;
+    }
+
+        .chart-bar:hover, .chart-bar.active {
+            background: var(--accent);
+        }
+
+    .chart-bar-label {
+        font-size: .68rem;
+        color: var(--text-muted);
+    }
+
+    .link-subtle {
+        font-size: .8rem;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+        .link-subtle:hover {
+            text-decoration: underline;
+        }
+</style>
+
+<!-- ── 2. KHU VỰC THẺ HTML NỘI DUNG CHÍNH (BÓC TỪ BODY DASHBOARD.TXT) ── -->
+<div class="container-fluid py-2">
+
+    <!-- Page header -->
+    <div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-2 mb-4">
+        <div>
+            <h1 class="greeting">Chào buổi sáng, Admin 👋</h1>
+            <p class="sub">Hôm nay có <strong>3 tiệc cưới</strong> đang diễn ra. Chúc một ngày làm việc suôn sẻ.</p>
+        </div>
+        <span class="date-badge">
+            <i class="bi bi-calendar3"></i>
+            Thứ Ba, 02 tháng 6, 2026
+        </span>
+    </div>
+
+    <!-- Metric cards -->
+    <div class="row g-4 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="metric-card mc-blue">
+                <div class="metric-icon" style="background:rgba(37,99,235,.10);color:var(--accent)">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <p class="metric-label">Doanh Thu Tháng</p>
+                <!-- 🌟 ĐÃ GẮN ID: Số liệu thật từ DB sẽ đổ vào đây -->
+                <div class="metric-value" style="color:var(--accent)" id="txtRevenue">Đang tính...</div>
+                <span class="metric-delta delta-up"><i class="bi bi-arrow-up-short"></i>+12.4%</span>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="metric-card mc-gold">
+                <div class="metric-icon" style="background:var(--gold-light);color:var(--gold)">
+                    <i class="bi bi-heart"></i>
+                </div>
+                <p class="metric-label">Tiệc Sắp Tới</p>
+                <div class="metric-value" style="color:var(--gold)">18</div>
+                <span class="metric-delta delta-up"><i class="bi bi-arrow-up-short"></i>+3 tuần này</span>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="metric-card mc-green">
+                <div class="metric-icon" style="background:var(--success-light);color:var(--success)">
+                    <i class="bi bi-building"></i>
+                </div>
+                <p class="metric-label">Tỷ Lệ Lấp Đầy</p>
+                <div class="metric-value" style="color:var(--success)">87%</div>
+                <span class="metric-delta delta-up"><i class="bi bi-arrow-up-short"></i>+5% so tháng trước</span>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="metric-card mc-purple">
+                <div class="metric-icon" style="background:var(--purple-light);color:var(--purple)">
+                    <i class="bi bi-people"></i>
+                </div>
+                <p class="metric-label">Tổng Tài Khoản</p>
+                <!-- 🌟 ĐÃ GẮN ID: Đếm tổng số dòng Taikhoan thật từ DB -->
+                <div class="metric-value" style="color:var(--purple)" id="txtDishesCount">0</div>
+                <span class="metric-delta delta-down"><i class="bi bi-arrow-down-short"></i>Trực tuyến</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main split layout -->
+    <div class="row g-4">
+
+        <!-- LEFT: Recent bookings table (65%) -->
+        <div class="col-lg-8">
+            <div class="section-card h-100">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="bi bi-table"></i> Tài Khoản Hệ Thống Mới Kích Hoạt</h2>
+                    <a href="#" class="link-subtle">Xem tất cả <i class="bi bi-arrow-right"></i></a>
+                </div>
+
+                <!-- mini revenue bars -->
+                <div class="mini-chart">
+                    <p style="font-size:.72rem;color:var(--text-muted);margin:0 0 .5rem;font-weight:600;text-transform:uppercase;letter-spacing:.4px">Doanh thu 7 ngày</p>
+                    <div class="chart-bars">
+                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:45%"></div><span class="chart-bar-label">T2</span></div>
+                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:70%"></div><span class="chart-bar-label">T3</span></div>
+                        <div class="chart-bar-wrap"><div class="chart-bar active" style="height:90%"></div><span class="chart-bar-label">T4</span></div>
+                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:55%"></div><span class="chart-bar-label">T5</span></div>
+                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:80%"></div><span class="chart-bar-label">T6</span></div>
+                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:100%"></div><span class="chart-bar-label">T7</span></div>
+                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:65%"></div><span class="chart-bar-label">CN</span></div>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table wh-table">
+                        <thead>
+                            <tr>
+                                <th>Tên Đăng Nhập</th>
+                                <th>Phân Quyền</th>
+                                <th>Thời Gian Quét</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <!-- 🌟 ĐÃ GẮN ID TẦNG THÂN: Dữ liệu thật SQL đổ ở đây -->
+                        <tbody id="recentBookingsBody">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted py-4">Đang tải dữ liệu trực tiếp từ SQL Server...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT: Tasks + Availability (35%) -->
+        <div class="col-lg-4 d-flex flex-column gap-4">
+
+            <!-- Today tasks -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="bi bi-check2-square"></i> Việc Cần Làm Hôm Nay</h2>
+                    <span style="font-size:.75rem;color:var(--text-muted)">3/5 hoàn thành</span>
+                </div>
+                <div class="task-body">
+                    <div class="task-item">
+                        <input type="checkbox" class="task-check" checked />
+                        <div class="flex-grow-1">
+                            <div class="task-label done">Kiểm tra kết nối gửi OTP tự động của Google SMTP</div>
+                            <div class="task-meta"><i class="bi bi-clock me-1"></i>08:00</div>
+                        </div>
+                        <span class="task-priority tp-high">Cao</span>
+                    </div>
+                    <div class="task-item">
+                        <input type="checkbox" class="task-check" checked />
+                        <div class="flex-grow-1">
+                            <div class="task-label done">Mở rộng độ dài cột MatKhau trong DB lên VARCHAR(500)</div>
+                            <div class="task-meta"><i class="bi bi-clock me-1"></i>09:30</div>
+                        </div>
+                        <span class="task-priority tp-high">Cao</span>
+                    </div>
+                    <div class="task-item">
+                        <input type="checkbox" class="task-check" checked />
+                        <div class="flex-grow-1">
+                            <div class="task-label done">Cấu hình rào chắn bảo mật Token JWT tại ô Layout</div>
+                            <div class="task-meta"><i class="bi bi-clock me-1"></i>10:00</div>
+                        </div>
+                        <span class="task-priority tp-high">Cao</span>
+                    </div>
+                    <div class="task-item">
+                        <input type="checkbox" class="task-check" />
+                        <div class="flex-grow-1">
+                            <div class="task-label">Tích hợp giao diện Landing Page cho Khách hàng</div>
+                            <div class="task-meta"><i class="bi bi-clock me-1"></i>14:00</div>
+                        </div>
+                        <span class="task-priority tp-med">Vừa</span>
+                    </div>
+                    <div class="task-item">
+                        <input type="checkbox" class="task-check" />
+                        <div class="flex-grow-1">
+                            <div class="task-label">Kiểm tra tiến độ chuẩn bị báo cáo đồ án</div>
+                            <div class="task-meta"><i class="bi bi-clock me-1"></i>15:30</div>
+                        </div>
+                        <span class="task-priority tp-low">Thấp</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ballroom availability -->
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="bi bi-grid-3x3-gap"></i> Trạng Thái Sảnh Hôm Nay</h2>
+                </div>
+                <div class="avail-grid">
+                    <div class="avail-slot slot-busy">
+                        <div class="slot-name"><span class="slot-dot" style="background:var(--danger)"></span>Sảnh Diamond</div>
+                        <div>Đang có tiệc</div>
+                        <div style="font-size:.72rem;margin-top:.2rem;opacity:.8">Tiệc Lan Anh · 300 khách</div>
+                    </div>
+                    <div class="avail-slot slot-available">
+                        <div class="slot-name"><span class="slot-dot" style="background:var(--success)"></span>Sảnh Ruby</div>
+                        <div>Trống</div>
+                        <div style="font-size:.72rem;margin-top:.2rem;opacity:.8">Sẵn sàng đặt tiệc</div>
+                    </div>
+                    <div class="avail-slot slot-available">
+                        <div class="slot-name"><span class="slot-dot" style="background:var(--success)"></span>Sảnh Emerald</div>
+                        <div>Trống</div>
+                        <div style="font-size:.72rem;margin-top:.2rem;opacity:.8">Sẵn sàng đặt tiệc</div>
+                    </div>
+                    <div class="avail-slot slot-maint">
+                        <div class="slot-name"><span class="slot-dot" style="background:var(--warning)"></span>Sảnh Sapphire</div>
+                        <div>Bảo trì</div>
+                        <div style="font-size:.72rem;margin-top:.2rem;opacity:.8">Hoàn thành: 20/06</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- ── 3. ĐOẠN SCRIPT JAVASCRIPT ĐỌC API KÉO DỮ LIỆU THẬT ── -->
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token');
+
+            try {
+                // Bắn lệnh fetch ngầm sang API thống kê DashboardApiController
+                const response = await fetch('/api/dashboardapi/stats', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    // 1. Gắn số liệu đếm thật vào card
+                    document.getElementById('txtRevenue').textContent = data.revenue;
+                    document.getElementById('txtDishesCount').textContent = data.dishesCount;
+
+                    // 2. Bóc mảng tài khoản SQL render thành các dòng tr
+                    const tableBody = document.getElementById('recentBookingsBody');
+                    tableBody.innerHTML = '';
+
+                    data.recentData.forEach(item => {
+                        const row = `
+                            <tr>
+                                <td>
+                                    <span class="customer-avatar">${item.username.substring(0, 2).toUpperCase()}</span>
+                                    <span class="customer-name">${item.username}</span>
+                                </td>
+                                <td><i class="bi bi-shield-lock text-primary me-1" style="font-size:.8rem"></i>${item.role}</td>
+                                <td>Vừa quét xong</td>
+                                <td><span class="badge-status badge-paid"><i class="bi bi-check-circle me-1"></i>${item.status}</span></td>
+                                <td class="d-flex gap-1">
+                                    <button class="btn-icon" onclick="alert('Xem tài khoản hệ thống: ${item.username}')"><i class="bi bi-eye"></i></button>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+
+                } else {
+                    console.error('Lỗi phản hồi từ API thống kê!');
+                }
+            } catch (error) {
+                console.error('Không thể kết nối đến API Dashboard:', error);
+            }
+        });
+
+        /* Hiệu ứng gạch ngang của checkbox việc cần làm */
+        document.querySelectorAll('.task-check').forEach(cb => {
+            cb.addEventListener('change', () => {
+                const label = cb.closest('.task-item').querySelector('.task-label');
+                label.classList.toggle('done', cb.checked);
+            });
+        });
+    </script>
+}
+
+```

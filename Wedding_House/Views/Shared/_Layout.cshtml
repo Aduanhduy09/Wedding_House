@@ -1,50 +1,256 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Wedding_House</title>
+    <title>@ViewData["Title"] - Wedding House</title>
+
+    <!-- Giữ nguyên các file styles hệ thống cũ của bạn -->
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Wedding_House.styles.css" asp-append-version="true" />
+
+    <!-- 🌟 BỔ SUNG: Thêm Bootstrap Icons và Google Fonts để làm giao diện Admin đẹp mắt -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+    <style>
+        :root {
+        --sidebar-width: 260px;
+        --bg-main: #f8fafc;
+        --card-bg: #ffffff;
+        --accent: #2563eb;
+        --accent-hover: #1d4ed8;
+        --text-main: #0f172a;
+        --text-muted: #64748b;
+        --border: #e2e8f0;
+        }
+
+        body {
+        font-family: 'DM Sans', sans-serif;
+        background-color: var(--bg-main);
+        color: var(--text-main);
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        }
+
+        /* ── SIDEBAR STYLE ── */
+        .sidebar {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: var(--sidebar-width);
+        background-color: #0f172a; /* Màu tối huyền bí, sang trọng */
+        color: #fff;
+        z-index: 1000;
+        padding: 1.5rem 1rem;
+        display: flex;
+        flex-direction: column;
+        }
+
+        .sidebar-brand {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #fff;
+        text-decoration: none;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 1.5rem;
+        }
+
+        .sidebar-brand i {
+        color: var(--accent);
+        font-size: 1.5rem;
+        }
+
+        .nav-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        flex-grow: 1;
+        }
+
+        .nav-menu-item {
+        margin-bottom: .4rem;
+        }
+
+        .nav-menu-link {
+        display: flex;
+        align-items: center;
+        gap: .85rem;
+        color: #94a3b8;
+        text-decoration: none;
+        padding: .75rem 1rem;
+        border-radius: 10px;
+        font-size: .95rem;
+        font-weight: 500;
+        transition: all .2s;
+        }
+
+        .nav-menu-link:hover, .nav-menu-item.active .nav-menu-link {
+        color: #fff;
+        background-color: var(--accent);
+        }
+
+        .nav-menu-link i {
+        font-size: 1.2rem;
+        }
+
+        /* ── MAIN CONTENT WRAPPER ── */
+        .main-wrapper {
+        margin-left: var(--sidebar-width);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        }
+
+        /* ── TOPBAR STYLE ── */
+        .topbar {
+        height: 70px;
+        background-color: #fff;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        }
+
+        .user-badge {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        font-weight: 600;
+        color: var(--text-main);
+        }
+
+        .btn-logout {
+        color: #ef4444;
+        background: none;
+        border: none;
+        font-weight: 500;
+        font-size: .9rem;
+        cursor: pointer;
+        transition: color 0.15s;
+        }
+
+        .btn-logout:hover {
+        color: #b91c1c;
+        text-decoration: underline;
+        }
+
+        .content-body {
+        padding: 2rem;
+        flex-grow: 1;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Wedding_House</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+    <!-- 1. THANH SIDEBAR ĐIỀU HƯỚNG BÊN TRÁI -->
+    <div class="sidebar">
+        <!-- 🌟 ĐÃ SỬA: Logo dẫn về trang AdminDashboard -->
+        <a class="sidebar-brand" asp-controller="Home" asp-action="AdminDashboard">
+            <i class="bi bi-layers-half"></i>
+            <span>Wedding House</span>
+        </a>
+        <ul class="nav-menu">
+            <li class="nav-menu-item">
+                <!-- 🌟 ĐÃ SỬA: Nút "Tổng quan" dẫn về trang AdminDashboard -->
+                <a class="nav-menu-link" asp-controller="Home" asp-action="AdminDashboard">
+                    <i class="bi bi-speedometer2"></i> Tổng quan
+                </a>
+            </li>
+            <li class="nav-menu-item">
+                <a class="nav-menu-link" href="/SanhTiec/Index">
+                    <i class="bi bi-house-heart"></i> Quản lý Sảnh tiệc
+                </a>
+            </li>
+            <li class="nav-menu-item">
+                <a class="nav-menu-link" href="/MonAn/Index">
+                    <i class="bi bi-egg-fried"></i> Quản lý Món ăn
+                </a>
+            </li>
+            <li class="nav-menu-item">
+                <a class="nav-menu-link" href="/DichVu/Index">
+                    <i class="bi bi-flower1"></i> Quản lý Dịch vụ
+                </a>
+            </li>
+            <li class="nav-menu-item">
+                <a class="nav-menu-link" href="/ThamSo/Index">
+                    <i class="bi bi-gear"></i> Tham số hệ thống
+                </a>
+            </li>
+        </ul>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Wedding_House - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <!-- 2. KHU VỰC CHỨA NỘI DUNG CHÍNH BÊN PHẢI -->
+    <div class="main-wrapper">
+
+        <!-- THANH TOPBAR PHÍA TRÊN -->
+        <div class="topbar">
+            <div class="page-title-hook">
+                <h5 class="m-0 font-weight-bold" style="color: var(--text-muted)">Hệ thống quản trị không gian tiệc cưới</h5>
+            </div>
+            <div class="d-flex align-items-center gap-4">
+                <div class="user-badge">
+                    <i class="bi bi-person-circle fs-5 text-primary"></i>
+                    <span id="topbarUsername">Đang tải...</span>
+                </div>
+                <button class="btn-logout" onclick="handleLogout()">
+                    <i class="bi bi-box-arrow-right"></i> Đăng xuất
+                </button>
+            </div>
         </div>
-    </footer>
+
+        <!-- PHẦN THÂN CHỨA NỘI DUNG THAY ĐỔI THEO TỪNG TRANG -->
+        <div class="content-body">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <!-- Giữ nguyên các file scripts hệ thống cũ của bạn -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <!-- SCRIPT KIỂM TRA QUYỀN TRUY CẬP (RÀO CHẮN BẢO MẬT BẰNG TOKEN & ROLE) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        const role = localStorage.getItem('role') || "KHONG_THAY_QUYEN";
+
+        // Chuyển về viết thường để kiểm tra
+        const cleanRole = role.toLowerCase().trim();
+
+        // RÀO CHẮN BẢO MẬT
+        if (!token || (cleanRole !== 'admin' && cleanRole !== 'nhanvien')) {
+        alert('Tài khoản của bạn không có quyền truy cập vào khu vực quản trị!');
+        localStorage.clear();
+        window.location.href = '/Taikhoan/Login';
+        return;
+        }
+
+        if (username) {
+        document.getElementById('topbarUsername').textContent = username + ` (${role})`;
+        }
+        });
+
+        // Hàm xử lý đăng xuất an toàn
+        function handleLogout() {
+        localStorage.clear(); // Xóa sạch Token JWT và phân quyền
+        window.location.href = '/Taikhoan/Login';
+        }
+    </script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

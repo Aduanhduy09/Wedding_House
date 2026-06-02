@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "model",
-        "Type": "Wedding_House.Controllers.AuthController\u002BLoginModel",
+        "Type": "Wedding_House.Controllers.LoginModel",
         "IsRequired": true
       }
     ],
@@ -25,7 +25,23 @@
     "Parameters": [
       {
         "Name": "model",
-        "Type": "Wedding_House.Models.Taikhoan",
+        "Type": "Wedding_House.Controllers.RegisterModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Wedding_House.Controllers.AuthController",
+    "Method": "VerifyOtp",
+    "RelativePath": "api/Auth/verify-otp",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "Wedding_House.Controllers.VerifyOtpModel",
         "IsRequired": true
       }
     ],
