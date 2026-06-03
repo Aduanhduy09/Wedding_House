@@ -23,7 +23,11 @@ public partial class Tieccuoi
 
     public int? SoBanDuTru { get; set; }
 
+    public DateTime NgayLap { get; set; } = DateTime.Now;
+
     public decimal? TienDatCoc { get; set; }
+
+    public int TrangThai { get; set; }
 
     public virtual ICollection<Chitietdatmon> Chitietdatmons { get; set; } = new List<Chitietdatmon>();
 

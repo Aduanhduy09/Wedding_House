@@ -1,0 +1,41 @@
+@model IEnumerable<Wedding_House.Models.Ca>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TenCa)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Gio)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TenCa)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gio)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.MaCa">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.MaCa">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.MaCa">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

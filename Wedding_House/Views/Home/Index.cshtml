@@ -1,8 +1,1164 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿
+@{
+    // ĐỨT LIÊN KẾT LAYOUT: Trang này dành cho khách xem công khai, không dùng chung khung Sidebar tối của Admin
+    Layout = null;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wedding House — Nơi Chắp Cánh Cho Hạnh Phúc Lứa Đôi</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+            :root {
+                --gold: #C9A84C;
+                --gold-light: #E8C97A;
+                --gold-pale: #F5EDDA;
+                --navy: #0E1B2E;
+                --navy-mid: #1C2F4A;
+                --ivory: #FAF7F2;
+                --charcoal: #2C2C2C;
+                --muted: #6B7280;
+                --font-display: 'Cormorant Garamond', Georgia, serif;
+                --font-body: 'Jost', sans-serif;
+            }
+
+            *, *::before, *::after {
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                font-family: var(--font-body);
+                background: var(--ivory);
+                color: var(--charcoal);
+                overflow-x: hidden;
+            }
+
+            /* NAVBAR */
+            .wh-navbar {
+                background: rgba(14, 27, 46, 0.96);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid rgba(201,168,76,0.25);
+                padding: 0.75rem 0;
+                transition: all 0.3s ease;
+            }
+
+                .wh-navbar .navbar-brand {
+                    font-family: var(--font-display);
+                    font-size: 1.7rem;
+                    font-weight: 600;
+                    color: var(--gold) !important;
+                    letter-spacing: 0.03em;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                    .wh-navbar .navbar-brand .brand-icon {
+                        width: 32px;
+                        height: 32px;
+                        border: 1.5px solid var(--gold);
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-size: 0.9rem;
+                        color: var(--gold);
+                    }
+
+                .wh-navbar .nav-link {
+                    font-family: var(--font-body);
+                    font-size: 0.82rem;
+                    font-weight: 500;
+                    letter-spacing: 0.12em;
+                    text-transform: uppercase;
+                    color: rgba(255,255,255,0.75) !important;
+                    padding: 0.5rem 1rem !important;
+                    position: relative;
+                    transition: color 0.25s;
+                }
+
+                    .wh-navbar .nav-link::after {
+                        content: '';
+                        position: absolute;
+                        bottom: 2px;
+                        left: 50%;
+                        right: 50%;
+                        height: 1px;
+                        background: var(--gold);
+                        transition: left 0.3s, right 0.3s;
+                    }
+
+                    .wh-navbar .nav-link:hover, .wh-navbar .nav-link.active {
+                        color: var(--gold) !important;
+                    }
+
+                        .wh-navbar .nav-link:hover::after, .wh-navbar .nav-link.active::after {
+                            left: 1rem;
+                            right: 1rem;
+                        }
+
+            .btn-auth {
+                font-family: var(--font-body);
+                font-size: 0.8rem;
+                font-weight: 500;
+                letter-spacing: 0.1em;
+                text-transform: uppercase;
+                color: var(--gold) !important;
+                border: 1px solid var(--gold);
+                border-radius: 0;
+                padding: 0.45rem 1.2rem;
+                background: transparent;
+                transition: all 0.3s;
+                text-decoration: none;
+                display: inline-block;
+            }
+
+                .btn-auth:hover {
+                    background: var(--gold);
+                    color: var(--navy) !important;
+                }
+
+            /* HERO */
+            .hero-section {
+                min-height: 100vh;
+                position: relative;
+                display: flex;
+                align-items: center;
+                overflow: hidden;
+            }
+
+            .hero-bg {
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(135deg, rgba(14,27,46,0.82) 0%, rgba(14,27,46,0.45) 60%, rgba(201,168,76,0.15) 100%), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=1920&q=80') center/cover no-repeat;
+                transform-origin: center;
+                animation: heroZoom 18s ease-in-out infinite alternate;
+            }
+
+            @@keyframes heroZoom {
+                from {
+                    transform: scale(1);
+                }
+
+                to {
+                    transform: scale(1.06);
+                }
+            }
+
+            .hero-ornament::before, .hero-ornament::after {
+                content: '';
+                position: absolute;
+                border: 1px solid rgba(201,168,76,0.2);
+                border-radius: 50%;
+            }
+
+            .hero-ornament::before {
+                width: 600px;
+                height: 600px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .hero-ornament::after {
+                width: 820px;
+                height: 820px;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            .hero-content {
+                position: relative;
+                z-index: 2;
+            }
+
+            .hero-label {
+                font-family: var(--font-body);
+                font-size: 0.72rem;
+                letter-spacing: 0.3em;
+                text-transform: uppercase;
+                color: var(--gold-light);
+                margin-bottom: 1.5rem;
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+                .hero-label::before, .hero-label::after {
+                    content: '';
+                    flex: 1;
+                    max-width: 60px;
+                    height: 1px;
+                    background: var(--gold);
+                    opacity: 0.6;
+                }
+
+            .hero-title {
+                font-family: var(--font-display);
+                font-size: clamp(2.8rem, 6vw, 5.5rem);
+                font-weight: 300;
+                font-style: italic;
+                color: #fff;
+                line-height: 1.15;
+                margin-bottom: 1.2rem;
+                animation: fadeUp 1s ease both;
+            }
+
+                .hero-title span {
+                    color: var(--gold-light);
+                    font-style: italic;
+                }
+
+            .hero-subtitle {
+                font-family: var(--font-body);
+                font-size: 1rem;
+                font-weight: 300;
+                color: rgba(255,255,255,0.72);
+                letter-spacing: 0.05em;
+                max-width: 480px;
+                margin-bottom: 2.5rem;
+                animation: fadeUp 1s 0.2s ease both;
+            }
+
+            .btn-gold {
+                font-family: var(--font-body);
+                font-size: 0.8rem;
+                font-weight: 500;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                background: var(--gold);
+                color: var(--navy);
+                border: 2px solid var(--gold);
+                padding: 0.85rem 2.2rem;
+                border-radius: 0;
+                transition: all 0.3s;
+                text-decoration: none;
+            }
+
+                .btn-gold:hover {
+                    background: transparent;
+                    color: var(--gold-light);
+                }
+
+            .btn-outline-gold {
+                font-family: var(--font-body);
+                font-size: 0.8rem;
+                font-weight: 500;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                background: transparent;
+                color: rgba(255,255,255,0.85);
+                border: 2px solid rgba(255,255,255,0.4);
+                padding: 0.85rem 2.2rem;
+                border-radius: 0;
+                transition: all 0.3s;
+                text-decoration: none;
+            }
+
+                .btn-outline-gold:hover {
+                    border-color: var(--gold);
+                    color: var(--gold);
+                }
+
+            .hero-scroll {
+                position: absolute;
+                bottom: 2.5rem;
+                left: 50%;
+                transform: translateX(-50%);
+                z-index: 2;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+                color: rgba(255,255,255,0.45);
+                font-size: 0.68rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                animation: bounce 2s infinite;
+            }
+
+            @@keyframes bounce {
+                0%, 100% {
+                    transform: translateX(-50%) translateY(0);
+                }
+
+                50% {
+                    transform: translateX(-50%) translateY(6px);
+                }
+            }
+
+            @@keyframes fadeUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(28px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            /* COMMON SECTION */
+            .section-label {
+                font-family: var(--font-body);
+                font-size: 0.68rem;
+                letter-spacing: 0.35em;
+                text-transform: uppercase;
+                color: var(--gold);
+                margin-bottom: 0.8rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+                .section-label::before, .section-label::after {
+                    content: '';
+                    width: 40px;
+                    height: 1px;
+                    background: var(--gold);
+                    opacity: 0.6;
+                }
+
+            .section-title {
+                font-family: var(--font-display);
+                font-size: clamp(2rem, 4vw, 3.2rem);
+                font-weight: 300;
+                font-style: italic;
+                color: var(--navy);
+                margin-bottom: 1rem;
+            }
+
+            .section-desc {
+                font-size: 0.95rem;
+                color: var(--muted);
+                max-width: 540px;
+                margin: 0 auto 3rem;
+                line-height: 1.8;
+            }
+
+            /* BALLROOMS */
+            .ballrooms-section {
+                background: var(--ivory);
+                padding: 6rem 0;
+            }
+
+            .hall-card {
+                position: relative;
+                overflow: hidden;
+                cursor: pointer;
+                box-shadow: 0 4px 30px rgba(14,27,46,0.1);
+                transition: box-shadow 0.4s;
+            }
+
+                .hall-card:hover {
+                    box-shadow: 0 12px 50px rgba(14,27,46,0.18);
+                }
+
+            .hall-card-img {
+                overflow: hidden;
+                height: 280px;
+            }
+
+                .hall-card-img img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.7s ease;
+                }
+
+            .hall-card:hover .hall-card-img img {
+                transform: scale(1.08);
+            }
+
+            .hall-card-body {
+                background: #fff;
+                padding: 1.6rem;
+                border-top: 2px solid var(--gold);
+            }
+
+            .hall-badge {
+                font-size: 0.65rem;
+                font-weight: 500;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--gold);
+                background: var(--gold-pale);
+                padding: 0.25rem 0.8rem;
+                display: inline-block;
+                margin-bottom: 0.8rem;
+            }
+
+            .hall-name {
+                font-family: var(--font-display);
+                font-size: 1.8rem;
+                font-weight: 600;
+                color: var(--navy);
+                margin-bottom: 0.5rem;
+            }
+
+            .hall-meta {
+                font-size: 0.82rem;
+                color: var(--muted);
+                display: flex;
+                align-items: center;
+                gap: 1.2rem;
+                margin-bottom: 1rem;
+            }
+
+            .hall-price {
+                font-family: var(--font-display);
+                font-size: 1.25rem;
+                color: var(--gold);
+                font-style: italic;
+                margin-bottom: 1rem;
+            }
+
+            .btn-detail {
+                font-size: 0.75rem;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                color: var(--navy);
+                text-decoration: none;
+                border-bottom: 1px solid var(--navy);
+                padding-bottom: 2px;
+                transition: color 0.25s, border-color 0.25s;
+                display: inline-flex;
+                align-items: center;
+                gap: 0.4rem;
+            }
+
+                .btn-detail:hover {
+                    color: var(--gold);
+                    border-color: var(--gold);
+                }
+
+            /* CULINARY */
+            .culinary-section {
+                background: var(--navy);
+                padding: 6rem 0;
+                position: relative;
+                overflow: hidden;
+            }
+
+                .culinary-section::before {
+                    content: '';
+                    position: absolute;
+                    top: -80px;
+                    right: -80px;
+                    width: 400px;
+                    height: 400px;
+                    border: 1px solid rgba(201,168,76,0.12);
+                    border-radius: 50%;
+                }
+
+                .culinary-section::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -100px;
+                    left: -100px;
+                    width: 500px;
+                    height: 500px;
+                    border: 1px solid rgba(201,168,76,0.08);
+                    border-radius: 50%;
+                }
+
+                .culinary-section .section-title {
+                    color: #fff;
+                }
+
+                .culinary-section .section-desc {
+                    color: rgba(255,255,255,0.55);
+                }
+
+            .dish-card {
+                background: rgba(255,255,255,0.04);
+                border: 1px solid rgba(201,168,76,0.2);
+                overflow: hidden;
+                transition: background 0.3s, border-color 0.3s;
+            }
+
+                .dish-card:hover {
+                    background: rgba(201,168,76,0.07);
+                    border-color: var(--gold);
+                }
+
+            .dish-img-wrap {
+                height: 200px;
+                overflow: hidden;
+            }
+
+                .dish-img-wrap img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    transition: transform 0.6s;
+                }
+
+            .dish-card:hover .dish-img-wrap img {
+                transform: scale(1.05);
+            }
+
+            .dish-body {
+                padding: 1.4rem;
+            }
+
+            .dish-tag {
+                font-size: 0.62rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: var(--gold);
+                background: rgba(201,168,76,0.12);
+                padding: 0.2rem 0.7rem;
+                display: inline-block;
+                margin-bottom: 0.75rem;
+            }
+
+            .dish-name {
+                font-family: var(--font-display);
+                font-size: 1.3rem;
+                color: #fff;
+                font-style: italic;
+                margin-bottom: 0.4rem;
+            }
+
+            .dish-desc {
+                font-size: 0.82rem;
+                color: rgba(255,255,255,0.5);
+                line-height: 1.7;
+                margin-bottom: 0.8rem;
+            }
+
+            .dish-price {
+                font-family: var(--font-display);
+                font-size: 1.2rem;
+                color: var(--gold-light);
+                font-style: italic;
+            }
+
+            /* SERVICES */
+            .services-section {
+                background: var(--ivory);
+                padding: 6rem 0;
+            }
+
+            .service-item {
+                text-align: center;
+                padding: 2.5rem 1.5rem;
+                border: 1px solid rgba(14,27,46,0.08);
+                background: #fff;
+                position: relative;
+                overflow: hidden;
+                transition: all 0.35s;
+            }
+
+                .service-item::after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    height: 3px;
+                    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+                    transform: scaleX(0);
+                    transition: transform 0.4s;
+                }
+
+                .service-item:hover {
+                    box-shadow: 0 8px 40px rgba(14,27,46,0.1);
+                    transform: translateY(-4px);
+                }
+
+                    .service-item:hover::after {
+                        transform: scaleX(1);
+                    }
+
+            .service-icon {
+                width: 64px;
+                height: 64px;
+                border: 1px solid rgba(201,168,76,0.4);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1.4rem;
+                font-size: 1.5rem;
+                color: var(--gold);
+                background: var(--gold-pale);
+                transition: all 0.3s;
+            }
+
+            .service-item:hover .service-icon {
+                background: var(--gold);
+                color: var(--navy);
+                border-color: var(--gold);
+            }
+
+            .service-name {
+                font-family: var(--font-display);
+                font-size: 1.25rem;
+                font-style: italic;
+                color: var(--navy);
+                margin-bottom: 0.5rem;
+            }
+
+            .service-desc {
+                font-size: 0.82rem;
+                color: var(--muted);
+                line-height: 1.7;
+            }
+
+            /* QUOTE */
+            .quote-section {
+                background: linear-gradient(135deg, var(--navy-mid), var(--navy));
+                padding: 5rem 0;
+            }
+
+            .quote-text {
+                font-family: var(--font-display);
+                font-size: clamp(1.6rem, 3.5vw, 2.8rem);
+                font-style: italic;
+                font-weight: 300;
+                color: #fff;
+                line-height: 1.4;
+            }
+
+                .quote-text span {
+                    color: var(--gold-light);
+                }
+
+            .quote-author {
+                font-size: 0.78rem;
+                letter-spacing: 0.2em;
+                text-transform: uppercase;
+                color: rgba(255,255,255,0.4);
+                margin-top: 1.5rem;
+            }
+
+            /* FOOTER */
+            .wh-footer {
+                background: #060D18;
+                color: rgba(255,255,255,0.6);
+                padding: 5rem 0 2rem;
+            }
+
+            .footer-brand {
+                font-family: var(--font-display);
+                font-size: 2.2rem;
+                font-weight: 600;
+                font-style: italic;
+                color: var(--gold);
+                margin-bottom: 1rem;
+            }
+
+            .footer-tagline {
+                font-size: 0.82rem;
+                color: rgba(255,255,255,0.35);
+                letter-spacing: 0.1em;
+                line-height: 1.8;
+                max-width: 260px;
+            }
+
+            .footer-heading {
+                font-family: var(--font-body);
+                font-size: 0.7rem;
+                font-weight: 500;
+                letter-spacing: 0.25em;
+                text-transform: uppercase;
+                color: var(--gold);
+                margin-bottom: 1.5rem;
+                padding-bottom: 0.75rem;
+                border-bottom: 1px solid rgba(201,168,76,0.2);
+            }
+
+            .footer-links {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+
+                .footer-links li {
+                    margin-bottom: 0.6rem;
+                }
+
+                .footer-links a {
+                    font-size: 0.85rem;
+                    color: rgba(255,255,255,0.45);
+                    text-decoration: none;
+                    transition: all 0.25s;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                }
+
+                    .footer-links a:hover {
+                        color: var(--gold-light);
+                        padding-left: 4px;
+                    }
+
+            .social-icons {
+                display: flex;
+                gap: 0.75rem;
+                margin-top: 1.5rem;
+            }
+
+                .social-icons a {
+                    width: 36px;
+                    height: 36px;
+                    border: 1px solid rgba(201,168,76,0.3);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: rgba(255,255,255,0.5);
+                    font-size: 0.9rem;
+                    text-decoration: none;
+                    transition: all 0.3s;
+                }
+
+                    .social-icons a:hover {
+                        background: var(--gold);
+                        border-color: var(--gold);
+                        color: var(--navy);
+                    }
+
+            .footer-divider {
+                border-color: rgba(255,255,255,0.08);
+                margin: 3rem 0 1.5rem;
+            }
+
+            .footer-bottom {
+                font-size: 0.75rem;
+                color: rgba(255,255,255,0.25);
+                text-align: center;
+            }
+
+            .hours-row {
+                display: flex;
+                justify-content: space-between;
+                font-size: 0.83rem;
+                margin-bottom: 0.5rem;
+                padding-bottom: 0.5rem;
+                border-bottom: 1px solid rgba(255,255,255,0.06);
+            }
+
+                .hours-row span:first-child {
+                    color: rgba(255,255,255,0.4);
+                }
+
+                .hours-row span:last-child {
+                    color: var(--gold-light);
+                }
+
+            /* SCROLL REVEAL */
+            .reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: opacity 0.7s ease, transform 0.7s ease;
+            }
+
+                .reveal.visible {
+                    opacity: 1;
+                    transform: none;
+                }
+
+            .reveal-delay-1 {
+                transition-delay: 0.1s;
+            }
+
+            .reveal-delay-2 {
+                transition-delay: 0.2s;
+            }
+
+            .reveal-delay-3 {
+                transition-delay: 0.3s;
+            }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg wh-navbar fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <span class="brand-icon"><i class="bi bi-heart-fill" style="font-size:0.7rem"></i></span>
+                Wedding House
+            </a>
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                <i class="bi bi-list text-white fs-4"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navMenu">
+                <ul class="navbar-nav mx-auto gap-lg-1">
+                    <li class="nav-item"><a class="nav-link active" href="#">Trang Chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#saloons">Sảnh Tiệc</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#culinary">Thực Đơn</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services">Dịch Vụ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#footer">Liên Hệ</a></li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-3" id="navAuthSection">
+                    <a href="/Taikhoan/Login" class="btn btn-auth">
+                        <i class="bi bi-person me-1"></i> Đăng Nhập / Đăng Ký
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="hero-ornament"></div>
+        <div class="container hero-content">
+            <div class="row justify-content-start">
+                <div class="col-lg-8 col-xl-7">
+                    <p class="hero-label">Nhà hàng tiệc cưới cao cấp</p>
+                    <h1 class="hero-title">
+                        Nơi Chắp Cánh Cho<br />
+                        <span>Hạnh Phúc Lứa Đôi</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Mỗi khoảnh khắc tại Wedding House là một trang thơ — nơi tình yêu được tôn vinh bằng không gian sang trọng, ẩm thực tinh tế và dịch vụ tận tâm.
+                    </p>
+                    <div class="hero-cta">
+                        <a href="/Taikhoan/Login" id="btnHeroBooking" class="btn btn-gold">
+                            <i class="bi bi-calendar-heart me-2"></i>Đặt Tiệc Ngay
+                        </a>
+                        <a href="#saloons" class="btn btn-outline-gold">
+                            Khám Phá Sảnh <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="hero-scroll">
+            <i class="bi bi-chevron-double-down"></i>
+            <span>Khám phá</span>
+        </div>
+    </section>
+
+    <div style="background: var(--navy); padding: 2rem 0; border-bottom: 1px solid rgba(201,168,76,0.15)">
+        <div class="container">
+            <div class="row text-center g-4 justify-content-center">
+                <div class="col-6 col-md-4">
+                    <div style="font-family:var(--font-display);font-size:2.4rem;color:var(--gold);font-style:italic;line-height:1">20</div>
+                    <div style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:0.4rem">Sảnh tiệc cao cấp</div>
+                </div>
+                <div class="col-6 col-md-4">
+                    <div style="font-family:var(--font-display);font-size:2.4rem;color:var(--gold);font-style:italic;line-height:1">100+</div>
+                    <div style="font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-top:0.4rem">Món đặc sản</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="ballrooms-section" id="saloons">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">Không gian tổ chức sự kiện</p>
+                <h2 class="section-title">Sảnh Tiệc Nổi Bật</h2>
+                <p class="section-desc">Không gian được thiết kế tỉ mỉ, toát lên vẻ đẳng cấp và lãng mạn — xứng đáng với ngày trọng đại nhất trong cuộc đời bạn.</p>
+            </div>
+
+            <div class="row g-4" id="saloonsContainer">
+                <div class="text-center w-100 py-4 text-muted small">
+                    <span class="spinner-border spinner-border-sm me-2 text-warning"></span> Đang tải danh sách sảnh tiệc cao cấp...
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="culinary-section" id="culinary">
+        <div class="container position-relative" style="z-index:2">
+            <div class="text-center reveal">
+                <p class="section-label" style="color:var(--gold)">Nghệ thuật ẩm thực</p>
+                <h2 class="section-title">Thực Đơn Đặc Sắc</h2>
+                <p class="section-desc">Mỗi món ăn là một tuyệt tác được chế biến bởi đội ngũ đầu bếp hàng đầu — mang đến hương vị khó quên cho đêm tiệc của bạn.</p>
+            </div>
+
+            <div class="row g-4" id="dishesContainer">
+                <div class="text-center w-100 py-4 text-white-50 small">
+                    <span class="spinner-border spinner-border-sm me-2 text-warning"></span> Đang kết nối nghệ thuật ẩm thực...
+                </div>
+            </div>
+
+            <div class="text-center mt-5 reveal">
+                <a href="/Home/ThucDon" id="btnViewMenu" class="btn btn-gold px-5">
+                    <i class="bi bi-book me-2"></i>Xem Toàn Bộ Thực Đơn
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="quote-section">
+        <div class="container text-center reveal">
+            <i class="bi bi-quote" style="font-size:3rem;color:var(--gold);opacity:0.3;display:block;margin-bottom:1rem"></i>
+            <p class="quote-text">
+                "Không chỉ là một bữa tiệc — đó là <span>khởi đầu của cả một hành trình</span> hạnh phúc mà bạn xứng đáng được tận hưởng."
+            </p>
+            <p class="quote-author">— Wedding House, tự hào phục vụ hơn 3.000 cặp đôi</p>
+        </div>
+    </section>
+
+    <section class="services-section" id="services">
+        <div class="container">
+            <div class="text-center reveal">
+                <p class="section-label">Trọn vẹn từng khoảnh khắc</p>
+                <h2 class="section-title">Dịch Vụ Trọn Gói</h2>
+                <p class="section-desc">Từ hoa tươi, ánh đèn đến âm nhạc — chúng tôi lo trọn vẹn để bạn chỉ cần đắm mình trong hạnh phúc.</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-sm-6 col-lg-3 reveal reveal-delay-1">
+                    <div class="service-item">
+                        <div class="service-icon"><i class="bi bi-flower1"></i></div>
+                        <h5 class="service-name">Hoa & Trang Trí</h5>
+                        <p class="service-desc">Thiết kế không gian cưới với hoa tươi nhập khẩu, phong cách theo từng mùa và cảm xúc của đôi uyên ương.</p>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3 reveal reveal-delay-2">
+                    <div class="service-item">
+                        <div class="service-icon"><i class="bi bi-soundwave"></i></div>
+                        <h5 class="service-name">Âm Thanh & Ánh Sáng</h5>
+                        <p class="service-desc">Hệ thống sound chuyên nghiệp, hiệu ứng đèn LED thông minh tạo không khí lộng lẫy và đầy cảm xúc.</p>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3 reveal reveal-delay-3">
+                    <div class="service-item">
+                        <div class="service-icon"><i class="bi bi-mic"></i></div>
+                        <h5 class="service-name">MC Chuyên Nghiệp</h5>
+                        <p class="service-desc">Đội ngũ MC kinh nghiệm, duyên dáng, dẫn dắt chương trình trôi chảy và tạo kết nối với toàn bộ khách mời.</p>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3 reveal reveal-delay-3">
+                    <div class="service-item">
+                        <div class="service-icon"><i class="bi bi-cake2"></i></div>
+                        <h5 class="service-name">Bánh Cưới Nghệ Thuật</h5>
+                        <p class="service-desc">Bánh cưới được thiết kế riêng cho mỗi cặp đôi — từ cấu trúc đến nguyên liệu cao cấp, tạo dấu ấn khó quên.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="wh-footer" id="footer">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <div class="footer-brand">Wedding House</div>
+                    <p class="footer-tagline">
+                        Kiến tạo những khoảnh khắc hạnh phúc không thể nào quên — chúng tôi tự hào là điểm đến tin cậy của hàng nghìn cặp đôi Việt Nam.
+                    </p>
+                    <div class="social-icons">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                        <a href="#"><i class="bi bi-youtube"></i></a>
+                        <a href="#"><i class="bi bi-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-2">
+                    <h6 class="footer-heading">Liên kết nhanh</h6>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="bi bi-chevron-right" style="font-size:0.65rem"></i>Trang chủ</a></li>
+                        <li><a href="#saloons"><i class="bi bi-chevron-right" style="font-size:0.65rem"></i>Sảnh tiệc</a></li>
+                        <li><a href="#culinary"><i class="bi bi-chevron-right" style="font-size:0.65rem"></i>Thực đơn</a></li>
+                        <li><a href="#services"><i class="bi bi-chevron-right" style="font-size:0.65rem"></i>Dịch vụ</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-sm-6 col-lg-2">
+                    <h6 class="footer-heading">Giờ mở cửa</h6>
+                    <div class="hours-row"><span>Thứ 2 — Thứ 6</span><span>9:00 — 21:00</span></div>
+                    <div class="hours-row"><span>Thứ 7</span><span>8:00 — 22:00</span></div>
+                    <div class="hours-row"><span>Chủ Nhật</span><span>8:00 — 22:00</span></div>
+                </div>
+            </div>
+
+            <hr class="footer-divider" />
+            <p class="footer-bottom">
+                © 2026 Wedding House.
+                Bảo lưu mọi quyền. Thiết kế với <i class="bi bi-heart-fill" style="color:var(--gold)"></i> tại Việt Nam.
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+        if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+        }
+        });
+        }, { threshold: 0.12 });
+
+        document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+        const fullName = localStorage.getItem('fullName') || username;
+
+        // 🌟 ĐỒNG BỘ ĐỔI HƯỚNG NÚT ĐẶT TIỆC CHÍNH XÁC KHI ĐÃ ĐĂNG NHẬP
+        const btnHeroBooking = document.getElementById('btnHeroBooking');
+
+        if (token && username) {
+        const authSection = document.getElementById('navAuthSection');
+        if (authSection) {
+        authSection.innerHTML = `
+        <div class="d-flex align-items-center gap-3">
+        <span class="text-white-50 small" style="letter-spacing: 0.05em; text-transform: uppercase;">
+        <i class="bi bi-person-circle text-warning me-1"></i> Xin chào,
+        <strong class="text-white">${fullName}</strong>
+        </span>
+
+        <a href="/Home/TaiKhoan" class="btn btn-sm text-white-50 border-0 p-0 d-flex align-items-center gap-1" title="Cài đặt tài khoản" style="font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; transition: color 0.25s;" onmouseover="this.classList.replace('text-white-50', 'text-warning')" onmouseout="this.classList.replace('text-warning', 'text-white-50')">
+        <i class="bi bi-gear-fill" style="color: var(--gold); font-size: 0.95rem;"></i> Cài đặt
+        </a>
+
+        <a href="#" id="btnCustomerLogout" class="btn-auth" style="padding: 0.35rem 0.9rem; font-size: 0.75rem;">
+        <i class="bi bi-box-arrow-right"></i> Thoát
+        </a>
+        </div>
+        `;
+        }
+
+        // Nếu tìm thấy token hợp lệ, chuyển hướng nút Đặt Tiệc Ngay sang trang form nghiệp vụ
+        if (btnHeroBooking) {
+        btnHeroBooking.setAttribute('href', '/Home/DatTiec');
+        }
+
+        document.getElementById('btnCustomerLogout')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        localStorage.clear();
+        sessionStorage.clear();
+        alert('Đã đăng xuất tài khoản thành công!');
+        window.location.href = '/Home/Index';
+        });
+        }
+
+        loadSaloonsFromServer(token);
+        loadDishesFromServer();
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        });
+
+        async function loadSaloonsFromServer(isLoggedIn) {
+        try {
+        const response = await fetch('/api/PublicData/saloons');
+        if (!response.ok) throw new Error('Không thể kết nối API Sảnh tiệc');
+        const saloons = await response.json();
+
+        const container = document.getElementById('saloonsContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        saloons.forEach((sanh, index) => {
+        const tenSanh = sanh.tenSanh || sanh.TenSanh || 'Sảnh Tiệc';
+        const sucChua = sanh.sucChua || sanh.SucChua || 0;
+        const dienTich = sanh.dienTich || sanh.DienTich || 0;
+        const giaThue = sanh.giaThue || sanh.GiaThue || 0;
+        const hinhAnh = sanh.hinhanh || sanh.HinhAnh || 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&q=80';
+
+        container.innerHTML += `
+        <div class="col-lg-4 reveal reveal-delay-${(index % 3) + 1}">
+        <div class="hall-card">
+        <div class="hall-card-img">
+        <img src="${hinhAnh}" alt="${tenSanh}" />
+        </div>
+        <div class="hall-card-body">
+        <span class="hall-badge">${sucChua >= 500 ? 'VVIP Diamond' : 'Premium'}</span>
+        <h3 class="hall-name">${tenSanh}</h3>
+        <div class="hall-meta">
+        <span><i class="bi bi-people me-1"></i>${sucChua} khách</span>
+        <span><i class="bi bi-rulers me-1"></i>${dienTich} m²</span>
+        </div>
+        <p class="hall-price">Từ ${giaThue.toLocaleString('vi-VN')} VNĐ / tiệc</p>
+        <a href="/Home/SanhTiec" class="btn-detail">Xem chi tiết <i class="bi bi-arrow-right"></i></a>
+        </div>
+        </div>
+        </div>
+        `;
+        });
+
+        container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        } catch (error) {
+        console.error('Lỗi load sảnh tiệc:', error);
+        document.getElementById('saloonsContainer').innerHTML = `
+        <div class="text-center w-100 py-3 text-danger small">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> Không thể kết nối với dữ liệu sảnh tiệc thực tế.
+        </div>`;
+        }
+        }
+
+        async function loadDishesFromServer() {
+        try {
+        const response = await fetch('/api/PublicData/dishes');
+        if (!response.ok) throw new Error('Không thể kết nối API Món ăn');
+        const dishes = await response.json();
+
+        const container = document.getElementById('dishesContainer');
+        if (!container) return;
+        container.innerHTML = '';
+
+        dishes.slice(0, 4).forEach((mon, index) => {
+        const tenMon = mon.tenMon || mon.TenMon || 'Món ăn cao cấp';
+        const loaiMon = mon.loaiMon || mon.LoaiMon || 'Món Chính';
+        const moTa = mon.moTa || mon.MoTa || 'Hương vị thượng hạng được tinh tuyển bởi đầu bếp trưởng Wedding House.';
+        const donGia = mon.donGia || mon.DonGia || 0;
+        const hinhAnh = mon.hinhanh || mon.HinhAnh || 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&q=80';
+
+        container.innerHTML += `
+        <div class="col-md-6 col-lg-3 reveal reveal-delay-${(index % 4) + 1}">
+        <div class="dish-card">
+        <div class="dish-img-wrap">
+        <img src="${hinhAnh}" alt="${tenMon}" />
+        </div>
+        <div class="dish-body">
+        <span class="dish-tag">${loaiMon}</span>
+        <h4 class="dish-name">${tenMon}</h4>
+        <p class="dish-desc">${moTa}</p>
+        <div class="dish-price">${donGia.toLocaleString('vi-VN')} VNĐ / người</div>
+        </div>
+        </div>
+        </div>
+        `;
+        });
+
+        container.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        } catch (error) {
+        console.error('Lỗi load thực đơn:', error);
+        document.getElementById('dishesContainer').innerHTML = `
+        <div class="text-center w-100 py-3 text-warning small">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> Không thể kết nối với danh sách ẩm thực thực tế.
+        </div>`;
+        }
+        }
+
+        const navbar = document.querySelector('.wh-navbar');
+        window.addEventListener('scroll', () => {
+        if (window.scrollY > 60) {
+        navbar.style.padding = '0.4rem 0';
+        } else {
+        navbar.style.padding = '0.75rem 0';
+        }
+        });
+    </script>
+</body>
+</html>

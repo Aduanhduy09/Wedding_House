@@ -1,0 +1,379 @@
+﻿@{
+    // Đồng bộ với hệ thống Layout Admin chính của dự án Wedding House
+}
+
+<style>
+    :root {
+        --navy: #0E1B2E;
+        --gold: #c9963c;
+        --border: #e2e8f0;
+        --radius: 14px;
+        --success-light: rgba(22,163,74,.10);
+        --success: #16a34a;
+    }
+
+    .section-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+    }
+
+    .section-header {
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .wh-table {
+        margin: 0;
+    }
+
+        .wh-table thead th {
+            background: #f8fafc;
+            font-size: .73rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: #64748b;
+            border-bottom: 1px solid var(--border);
+            padding: .9rem 1.2rem;
+        }
+
+        .wh-table tbody td {
+            padding: 1rem 1.2rem;
+            vertical-align: middle;
+            font-size: .875rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .wh-table tbody tr:hover td {
+            background: #f8faff;
+        }
+
+    .badge-sanh {
+        font-size: .75rem;
+        font-weight: 600;
+        padding: .3rem .7rem;
+        border-radius: 6px;
+        background-color: #f1f5f9;
+        color: var(--navy);
+        border: 1px solid #cbd5e1;
+    }
+
+    .badge-status-confirmed {
+        font-size: .72rem;
+        font-weight: 600;
+        padding: .3rem .7rem;
+        border-radius: 20px;
+        background: var(--success-light);
+        color: var(--success);
+    }
+</style>
+
+<div class="container-fluid py-3">
+    <!-- Tiêu đề trang -->
+    <div class="mb-4">
+        <h1 class="fw-bold text-navy" style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.85rem;">
+            <i class="bi bi-building-gear text-gold me-2"></i>Hệ Thống Điều Phối & Quản Lý Sảnh Tiệc cưới
+        </h1>
+        <p class="text-muted small m-0">Hiển thị danh sách toàn bộ các cặp đôi đã đặt lịch giữ sảnh thành công trên hệ thống Wedding House.</p>
+    </div>
+
+    <!-- Thanh công cụ tìm kiếm nhanh -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-5">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0 rounded-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" class="form-control border-start-0 rounded-0 shadow-none" id="txtSearchName" placeholder="Tìm tên cô dâu, chú rể..." onkeyup="filterWeddings()">
+            </div>
+        </div>
+        <div class="col-md-4">
+            <select class="form-select rounded-0 shadow-none" id="ddlFilterSanh" onchange="filterWeddings()">
+                <option value="">-- Tất cả các đại sảnh --</option>
+                <option value="Sảnh 1">Sảnh Diamond (Sảnh 1)</option>
+                <option value="Sảnh 2">Sảnh Ruby (Sảnh 2)</option>
+                <option value="Sảnh 3">Sảnh Emerald (Sảnh 3)</option>
+                <option value="Sảnh 4">Sảnh Sapphire (Sảnh 4)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Bảng dữ liệu cốt lõi -->
+    <div class="section-card shadow-sm">
+        <div class="section-header">
+            <h5 class="m-0 fw-bold text-navy" style="font-size: 0.95rem;">
+                <i class="bi bi-calendar-check text-primary me-2"></i>Lịch Trình Sử Dụng Không Gian Đại Sảnh
+            </h5>
+            <span class="badge bg-dark rounded-0 px-3 py-1.5" id="lblTotalConfirmed">0 tiệc cưới giữ lịch</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table wh-table align-middle" id="tblConfirmedWeddings">
+                <thead>
+                    <tr>
+                        <th>Mã Đơn</th>
+                        <th>Chủ Đơn Đặt</th>
+                        <th>Tên Cô Dâu - Chú Rể</th>
+                        <th>Không Gian Sảnh</th>
+                        <th>Thời Gian Đãi</th>
+                        <th class="text-center">Số Bàn</th>
+                        <th class="text-end">Tiền Còn Lại</th>
+                        <th>Tình Trạng</th>
+                        <th class="text-center">Tác Vụ</th>
+                    </tr>
+                </thead>
+                <tbody id="confirmedTableBody">
+                    <tr>
+                        <td colspan="9" class="text-center text-muted py-5">
+                            <span class="spinner-border spinner-border-sm text-primary me-2"></span> Đang truy xuất danh sách tiệc cưới đã giữ chỗ...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Chi Tiết Tiệc Cưới -->
+    <div class="modal fade" id="modalChiTietTiec" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg">
+                <div class="modal-header bg-light border-bottom-0">
+                    <h5 class="modal-title fw-bold text-navy" id="modalTitle">Chi Tiết Đơn Tiệc #WHD-</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Thông tin chung -->
+                    <div class="row mb-4">
+                        <div class="col-sm-6">
+                            <p class="mb-1 text-muted small text-uppercase">Cô dâu - Chú rể</p>
+                            <h6 class="fw-bold" id="lblCoDauChuRe">--</h6>
+                        </div>
+                        <div class="col-sm-6 text-sm-end">
+                            <p class="mb-1 text-muted small text-uppercase">Thời gian & Địa điểm</p>
+                            <h6 class="fw-bold" id="lblSanhCa">--</h6>
+                            <div class="small" id="lblNgaySoBan">--</div>
+                        </div>
+                    </div>
+
+                    <!-- Bảng Thực đơn & Dịch vụ -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-primary fw-bold mb-2"><i class="bi bi-cup-hot"></i> Thực Đơn Đã Chọn</h6>
+                            <ul class="list-group list-group-flush border" id="listMonAn">
+                                <li class="list-group-item text-muted small text-center">Đang tải...</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <h6 class="text-primary fw-bold mb-2"><i class="bi bi-stars"></i> Dịch Vụ Đính Kèm</h6>
+                            <ul class="list-group list-group-flush border" id="listDichVu">
+                                <li class="list-group-item text-muted small text-center">Đang tải...</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Tổng kết tài chính -->
+                    <div class="bg-light p-3 rounded mt-2">
+                        <div class="d-flex justify-content-between mb-2 small">
+                            <span>Chi phí bàn tiệc:</span> <strong id="lblTienBan">0 đ</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2 small">
+                            <span>Chi phí dịch vụ/sảnh:</span> <strong id="lblTienDichVu">0 đ</strong>
+                        </div>
+                        <hr class="my-2">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Tổng hóa đơn:</span> <strong class="text-navy" id="lblTongHoaDon">0 đ</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Đã thu cọc:</span> <strong class="text-success" id="lblTienCoc">0 đ</strong>
+                        </div>
+                        <div class="d-flex justify-content-between fs-5 mt-3">
+                            <span class="fw-bold">Khách cần thanh toán:</span>
+                            <strong class="text-danger" id="lblTienConLai">0 đ</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-top-0 bg-light">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let originalWeddingData = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadConfirmedBookings();
+        });
+
+        // Hàm bốc dữ liệu tiệc cưới đã cọc từ C# Server
+        async function loadConfirmedBookings() {
+            const tbody = document.getElementById('confirmedTableBody');
+            const totalLbl = document.getElementById('lblTotalConfirmed');
+
+            try {
+                const res = await fetch('/api/Booking/admin/confirmed-bookings');
+                if (!res.ok) throw new Error("Lỗi tải dữ liệu sảnh tiệc");
+
+                originalWeddingData = await res.json();
+                totalLbl.innerText = `${originalWeddingData.length} tiệc cưới giữ lịch`;
+
+                renderTable(originalWeddingData);
+
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center text-danger py-4">Lỗi kết nối API quản lý sảnh tiệc cưới.</td></tr>';
+            }
+        }
+
+        // Hàm đổ mảng dữ liệu ra cấu trúc bảng HTML
+        function renderTable(data) {
+            const tbody = document.getElementById('confirmedTableBody');
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-4">Chưa ghi nhận tiệc cưới nào trong danh mục này.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '';
+            data.forEach(item => {
+                let statusBadge = '';
+                let actionBtn = '';
+
+                // Nút "Chi tiết" luôn hiển thị cho cả 2 trạng thái
+                let btnDetail = `<button class="btn btn-sm btn-outline-primary rounded-0 px-2 fw-medium me-1" style="font-size:0.8rem;" onclick="viewDetails(${item.maDatTiecCuoi})"><i class="bi bi-eye"></i> Chi tiết</button>`;
+
+                if (item.trangThai === 2) {
+                    // Đơn đã tất toán
+                    statusBadge = `<span class="badge bg-success text-white px-2.5 py-1.5"><i class="bi bi-check-circle-fill me-1"></i>Đã tất toán</span>`;
+                    actionBtn = btnDetail + `<span class="text-success small fw-bold ms-2 d-inline-block"><i class="bi bi-check-all fs-5"></i> Hoàn tất</span>`;
+                } else {
+                    // Đơn mới chỉ cọc
+                    statusBadge = `<span class="badge-status-confirmed"><i class="bi bi-shield-fill-check me-1"></i>Đã cọc 20%</span>`;
+                    actionBtn = btnDetail + `
+                        <button class="btn btn-sm btn-success rounded-0 px-2 fw-medium" style="font-size:0.8rem;" onclick="xacNhanTatToan(${item.maDatTiecCuoi})">
+                            <i class="bi bi-cash-coin me-1"></i> Xác nhận tất toán
+                        </button>
+                    `;
+                }
+
+                tbody.innerHTML += `
+                    <tr class="wedding-row-item" data-sanh="Sảnh ${item.maSanh}" data-names="${item.coDauChuRe.toLowerCase()}">
+                        <td class="fw-bold text-primary">#WHD-${item.maDatTiecCuoi}</td>
+                        <td><span class="text-muted small">${item.tenKhachHang || 'Hệ thống'}</span></td>
+                        <td class="fw-semibold text-navy">${item.coDauChuRe}</td>
+                        <td><span class="badge-sanh"><i class="bi bi-door-open me-1"></i>${item.tenSanh || 'Sảnh ' + item.maSanh}</span></td>
+                        <td>
+                            <div class="fw-semibold">${item.ngayDaiTiec}</div>
+                            <small class="text-muted">${item.tenCa}</small>
+                        </td>
+                        <td class="text-center fw-bold">${item.soLuongBan} bàn</td>
+                        <td class="text-end fw-bold text-danger">${item.tienConLai.toLocaleString('vi-VN')} đ</td>
+                        <td>${statusBadge}</td>
+                        <td class="text-end">${actionBtn}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // HÀM MỚI THÊM: Bốc dữ liệu API và đổ vào khung Modal
+        async function viewDetails(maDon) {
+            try {
+                const res = await fetch(`/api/Booking/admin/full-details/${maDon}`);
+                if (!res.ok) throw new Error("Lỗi tải dữ liệu chi tiết");
+                const data = await res.json();
+
+                // 1. Gắn thông tin cơ bản
+                document.getElementById('modalTitle').innerText = `Chi Tiết Đơn Tiệc #WHD-${data.maDon}`;
+                document.getElementById('lblCoDauChuRe').innerText = data.coDauChuRe;
+                document.getElementById('lblSanhCa').innerText = data.sanhCa;
+                document.getElementById('lblNgaySoBan').innerText = `Ngày: ${data.ngayDai} | Quy mô: ${data.soBan} bàn`;
+
+                // 2. Render danh sách món ăn
+                const ulMonAn = document.getElementById('listMonAn');
+                ulMonAn.innerHTML = '';
+                if(data.danhSachMon.length === 0) {
+                    ulMonAn.innerHTML = '<li class="list-group-item text-muted small">Không có dữ liệu món ăn</li>';
+                } else {
+                    data.danhSachMon.forEach(m => {
+                        ulMonAn.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center small">
+                            ${m.tenMon} <span class="text-muted">${m.donGia.toLocaleString('vi-VN')}đ</span>
+                        </li>`;
+                    });
+                }
+
+                // 3. Render danh sách dịch vụ
+                const ulDichVu = document.getElementById('listDichVu');
+                ulDichVu.innerHTML = '';
+                if(data.danhSachDichVu.length === 0) {
+                    ulDichVu.innerHTML = '<li class="list-group-item text-muted small">Không có dịch vụ đính kèm</li>';
+                } else {
+                    data.danhSachDichVu.forEach(d => {
+                        ulDichVu.innerHTML += `<li class="list-group-item d-flex justify-content-between align-items-center small">
+                            ${d.tenDv} <span class="text-muted">${d.thanhTien.toLocaleString('vi-VN')}đ</span>
+                        </li>`;
+                    });
+                }
+
+                // 4. Render Dòng tiền tài chính
+                document.getElementById('lblTienBan').innerText = data.taiChinh.tongTienBan.toLocaleString('vi-VN') + ' đ';
+                document.getElementById('lblTienDichVu').innerText = data.taiChinh.tongTienDichVu.toLocaleString('vi-VN') + ' đ';
+                document.getElementById('lblTongHoaDon').innerText = data.taiChinh.tongHoaDon.toLocaleString('vi-VN') + ' đ';
+                document.getElementById('lblTienCoc').innerText = data.taiChinh.tienDaCoc.toLocaleString('vi-VN') + ' đ';
+                document.getElementById('lblTienConLai').innerText = data.taiChinh.tienConLai.toLocaleString('vi-VN') + ' đ';
+
+                // 5. Hiển thị Modal lên màn hình
+                const modalChiTiet = new bootstrap.Modal(document.getElementById('modalChiTietTiec'));
+                modalChiTiet.show();
+
+            } catch (err) {
+                console.error(err);
+                alert("Không thể tải chi tiết đơn tiệc. Vui lòng thử lại!");
+            }
+        }
+
+        // Kích hoạt luồng bẫy xác nhận và đẩy lệnh POST cập nhật DB trạng thái tất toán
+        async function xacNhanTatToan(maDon) {
+            const choice = confirm("Bạn có chắc chắn xác nhận tất toán chứ?");
+
+            if (!choice) return;
+
+            try {
+                const res = await fetch(`/api/Booking/admin/checkout/${maDon}`, {
+                    method: 'POST'
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert(data.message);
+                    loadConfirmedBookings();
+                } else {
+                    alert(data.message || "Có lỗi phát sinh trong quy trình tất toán.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Không thể kết nối đồng bộ hóa với máy chủ để xử lý tất toán.");
+            }
+        }
+
+        // Tính năng lọc tìm kiếm Real-time bằng Client JavaScript
+        function filterWeddings() {
+            const searchKeyword = document.getElementById('txtSearchName').value.toLowerCase().trim();
+            const selectedSanh = document.getElementById('ddlFilterSanh').value;
+
+            const filtered = originalWeddingData.filter(item => {
+                const matchName = item.coDauChuRe.toLowerCase().includes(searchKeyword);
+                const matchSanh = selectedSanh === "" || `Sảnh ${item.maSanh}` === selectedSanh;
+                return matchName && matchSanh;
+            });
+
+            renderTable(filtered);
+        }
+    </script>
+}

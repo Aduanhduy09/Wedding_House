@@ -11,7 +11,7 @@ public partial class Thamso
 
     public decimal? DonGiaBanToiThieu { get; set; }
 
-    public string? LoaiCa { get; set; }
+    public string? LoaiSanh { get; set; }
 
     public int? SoLuongMonAn { get; set; }
 

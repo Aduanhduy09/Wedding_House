@@ -16,4 +16,7 @@ public partial class Taikhoan
     public virtual Khachhang? Khachhang { get; set; }
 
     public virtual Nhanvien? Nhanvien { get; set; }
+    public bool? IsConfirmed { get; set; }
+    public string? OtpCode { get; set; }
+    public DateTime? OtpExpired { get; set; }
 }

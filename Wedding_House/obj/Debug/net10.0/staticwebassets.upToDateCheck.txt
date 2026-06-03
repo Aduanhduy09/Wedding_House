@@ -61,6 +61,7 @@ wwwroot\lib\jquery\dist\jquery.slim.js
 wwwroot\lib\jquery\dist\jquery.slim.min.js
 wwwroot\lib\jquery\dist\jquery.slim.min.map
 wwwroot\lib\jquery\LICENSE.txt
+wwwroot\image\image_124000.jpg
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\wwwroot\css\site.css
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\wwwroot\favicon.ico
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\wwwroot\js\site.js

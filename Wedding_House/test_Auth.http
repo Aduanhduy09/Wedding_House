@@ -1,0 +1,27 @@
+@hostname = https://localhost:7002
+
+### ### A. ĐĂNG KÝ (Nhớ điền Email THẬT của bạn để nhận mã nhé)
+POST {{hostname}}/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "duy_otp_test",
+  "password": "password123",
+  "hoTen": "Trần Hoàng Duy",
+  "dienThoai": "0329393939",
+  "email": "hoangduy253cuxaduong@gmail.com"
+}
+
+### B. XÁC THỰC MÃ (Mở điện thoại/máy tính lên check hòm thư và lấy mã điền vào đây)
+POST {{hostname}}/api/auth/verify-otp
+Content-Type: application/json
+
+{
+  "username": "duy_otp_test",
+  "otpCode": "166613"
+}
+
+
+### 2. TEST GỌI VÀO TRANG CREATE (NHỚ PHẢI CÓ 3 DẤU THĂNG PHÍA TRÊN)
+GET {{hostname}}/Monan/Create
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1bmlxdWVfbmFtZSI6ImFkdWFuaGR1eSIsInJvbGUiOiJBZG1pbiIsIm5iZiI6MTc4MDMzNTM2OSwiZXhwIjoxNzgwMzQ5NzY5LCJpYXQiOjE3ODAzMzUzNjksImlzcyI6IldlZGRpbmdIb3VzZVNlcnZlciIsImF1ZCI6IldlZGRpbmdIb3VzZUNsaWVudCJ9.gSMGpkjFR4WWkpgCl_6h_7XKO3u3hnP1jRlm5Acd0SU

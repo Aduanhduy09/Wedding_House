@@ -11,6 +11,8 @@ public partial class Khachhang
 
     public string? DienThoai { get; set; }
 
+    public string? Email { get; set; }
+
     public int? MaTaiKhoan { get; set; }
 
     public virtual Taikhoan? MaTaiKhoanNavigation { get; set; }

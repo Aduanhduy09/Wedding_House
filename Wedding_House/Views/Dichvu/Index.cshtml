@@ -1,0 +1,218 @@
+@model IEnumerable<Wedding_House.Models.Dichvu>
+
+@{
+    ViewData["Title"] = "Quản Lý Danh Mục Dịch Vụ";
+}
+
+<style>
+    :root {
+        --navy: #0E1B2E;
+        --gold: #c9963c;
+        --border: #e2e8f0;
+        --radius: 14px;
+    }
+
+    .section-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+    }
+
+    .section-header {
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .wh-table {
+        margin: 0;
+    }
+
+        .wh-table thead th {
+            background: #f8fafc;
+            font-size: .75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: #64748b;
+            border-bottom: 1px solid var(--border);
+            padding: .9rem 1.2rem;
+        }
+
+        .wh-table tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: middle;
+            font-size: .875rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .wh-table tbody tr:hover td {
+            background: #f8faff;
+        }
+</style>
+
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold text-navy" style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.85rem;">
+                <i class="bi bi-gift text-gold me-2"></i>Quản Lý Danh Mục Dịch Vụ
+            </h1>
+            <p class="text-muted small m-0">Xem danh sách, sửa đổi tên gọi hoặc gỡ bỏ các dịch vụ đi kèm thuộc hệ thống Wedding House.</p>
+        </div>
+        <button class="btn text-white rounded-0 px-3 fw-medium" style="background-color: var(--navy);" onclick="alert('Chức năng Thêm dịch vụ mới đang được xây dựng!')">
+            <i class="bi bi-plus-lg me-1"></i> Thêm dịch vụ mới
+        </button>
+    </div>
+
+    <div class="section-card shadow-sm">
+        <div class="section-header">
+            <h5 class="m-0 fw-bold text-navy" style="font-size: 0.95rem;">
+                <i class="bi bi-star-fill text-warning me-2"></i>Danh Sách Dịch Vụ Tiệc Cưới Trực Tuyến
+            </h5>
+            <span class="badge bg-dark rounded-0 px-3 py-1.5">@Model.Count() dịch vụ hiện có</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table wh-table align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 150px;">Mã Dịch Vụ</th>
+                        <th>Tên Gọi Dịch Vụ Đi Kèm</th>
+                        <th class="text-center" style="width: 250px;">Hành Động Quản Trị</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold text-primary">#SRV-@item.MaDichVu</td>
+                            <td class="fw-semibold text-navy" id="name_display_@item.MaDichVu">@item.TenDichVu</td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button class="btn btn-sm btn-outline-primary rounded-0 px-2.5" onclick="moKhungDoiTen(@item.MaDichVu)">
+                                        <i class="bi bi-pencil-square me-1"></i>Sửa
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger rounded-0 px-2.5" onclick="xuLyXoaDichVu(@item.MaDichVu)">
+                                        <i class="bi bi-trash3 me-1"></i>Xóa
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editServiceModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-0 border-0 shadow">
+            <div class="modal-header text-white rounded-0" style="background-color: var(--navy); border-bottom: 2px solid var(--gold);">
+                <h5 class="modal-title" style="font-family: 'Cormorant Garamond', serif; font-size: 1.25rem;">
+                    <i class="bi bi-pencil-square me-2 text-warning"></i>Thay Đổi Tên Dịch Vụ
+                </h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-white">
+                <input type="hidden" id="editMaDichVu" />
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-uppercase text-muted">Tên dịch vụ mới:</label>
+                    <input type="text" class="form-control rounded-0 shadow-none fw-semibold" id="editTenDichVu" placeholder="Nhập tên gọi dịch vụ cần chỉnh sửa..." />
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light rounded-0 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-dark rounded-0 px-3" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button type="button" class="btn text-white rounded-0 px-4" style="background-color: var(--navy);" onclick="xacNhanLuuThayDoi()">Xác nhận lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let modalInstance = null;
+
+        // 1. Hàm mở Khung Modal Popup đổi tên dịch vụ
+        function moKhungDoiTen(id) {
+            // Tự động tìm đến dòng td lấy chữ hiển thị thật ra màn hình
+            const tenDichVuThat = document.getElementById(`name_display_${id}`).innerText.trim();
+
+            document.getElementById('editMaDichVu').value = id;
+            document.getElementById('editTenDichVu').value = tenDichVuThat;
+
+            const modalElement = document.getElementById('editServiceModal');
+            modalInstance = new bootstrap.Modal(modalElement);
+            modalInstance.show();
+        }
+
+        // 2. Luồng xử lý khi bấm nút "Xác nhận lưu" tên dịch vụ mới
+        async function xacNhanLuuThayDoi() {
+            const id = document.getElementById('editMaDichVu').value;
+            const newName = document.getElementById('editTenDichVu').value.trim();
+
+            if (!newName) {
+                alert("Vui lòng điền tên dịch vụ, không được để trống!");
+                return;
+            }
+
+            // Hộp thoại bẫy xác nhận OK/Hủy đúng như yêu cầu
+            const choice = confirm("Bạn có chắc chắn muốn xác nhận thay đổi tên dịch vụ này chứ?");
+            if (!choice) return;
+
+            try {
+                const res = await fetch('/api/Dichvu/update', {
+                    method: 'POST',
+                    headers: { 'Type-Content': 'application/json', 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ maDichVu: parseInt(id), tenDichVu: newName })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert(data.message);
+                    if (modalInstance) modalInstance.hide();
+
+                    // Cập nhật giá trị trực tiếp tại dòng
+                    document.getElementById(`name_display_${id}`).innerText = newName;
+                } else {
+                    alert(data.message || "Gặp sự cố khi lưu thông tin.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Không thể kết nối với máy chủ để cập nhật dữ liệu.");
+            }
+        }
+
+        // 3. Luồng xử lý khi thực hiện hành động Xóa Dịch Vụ
+        async function xuLyXoaDichVu(id) {
+            // Bóc tách tên thật từ DOM để đưa vào chuỗi thông báo cảnh báo trực quan
+            const tenDichVuThat = document.getElementById(`name_display_${id}`).innerText.trim();
+
+            // Hộp thoại bẫy cảnh báo xác nhận trước khi thực hiện xóa khỏi hệ thống
+            const choice = confirm(`Cảnh báo: Bạn có chắc chắn muốn xóa dịch vụ [ ${tenDichVuThat} ] ra khỏi cơ sở dữ liệu hệ thống chứ?`);
+            if (!choice) return;
+
+            try {
+                const res = await fetch(`/api/Dichvu/delete/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert(data.message);
+                    window.location.reload(); // Làm tươi trang để cập nhật số lượng danh mục
+                } else {
+                    alert(data.message || "Gặp sự cố khi xóa dịch vụ.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Không thể kết nối máy chủ để thực hiện lệnh xóa.");
+            }
+        }
+    </script>
+}

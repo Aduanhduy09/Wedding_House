@@ -1,0 +1,44 @@
+﻿@model Wedding_House.Models.Thamso
+
+<div class="container mt-4">
+    <div class="card shadow" style="max-width: 600px; margin: 0 auto;">
+        <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0">✏️ Chỉnh sửa Định mức Tham số</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" method="post">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="form-group mb-3">
+                    <label class="form-label fw-bold">Loại Sảnh:</label>
+                    <input asp-for="LoaiSanh" class="form-control bg-light" readonly />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label fw-bold">Đơn Giá Bàn Tối Thiểu:</label>
+                    <input asp-for="DonGiaBanToiThieu" class="form-control" type="number" step="any" required />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label fw-bold">Số Lượng Bàn Tối Đa:</label>
+                    <input asp-for="SoLuongBanToiDa" class="form-control" type="number" required />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label fw-bold">Số Lượng Món Ăn Định Mức:</label>
+                    <input asp-for="SoLuongMonAn" class="form-control" type="number" required />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label fw-bold">Số Lượng Dịch Vụ Định Mức:</label>
+                    <input asp-for="SoLuongDichVu" class="form-control" type="number" required />
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Index" class="btn btn-secondary">⬅️ Quay lại</a>
+                    <button type="submit" class="btn btn-success">💾 Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

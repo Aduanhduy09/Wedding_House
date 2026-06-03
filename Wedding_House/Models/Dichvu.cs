@@ -9,5 +9,7 @@ public partial class Dichvu
 
     public string TenDichVu { get; set; } = null!;
 
+    public decimal DonGiaMacDinh { get; set; }
+
     public virtual ICollection<Chitietdichvu> Chitietdichvus { get; set; } = new List<Chitietdichvu>();
 }

@@ -1,0 +1,533 @@
+﻿@{
+    ViewData["Title"] = "Bảng Điều Khiển Quản Trị";
+}
+
+<style>
+    :root {
+        --gold: #c9963c;
+        --gold-light: rgba(201,150,60,.10);
+        --success: #16a34a;
+        --success-light: rgba(22,163,74,.10);
+        --warning: #d97706;
+        --warning-light: rgba(217,119,6,.10);
+        --danger: #dc2626;
+        --danger-light: rgba(220,38,38,.10);
+        --purple: #7c3aed;
+        --purple-light: rgba(124,58,237,.10);
+        --radius: 14px;
+    }
+
+    .page-header .greeting {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 1.85rem;
+        font-weight: 700;
+        letter-spacing: -.5px;
+        margin: 0;
+    }
+
+    .page-header .sub {
+        font-size: .84rem;
+        color: var(--text-muted);
+        margin: .2rem 0 0;
+    }
+
+    .page-header .date-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: .4rem .9rem;
+        font-size: .8rem;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    .metric-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1.4rem 1.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: transform .2s, box-shadow .2s;
+    }
+
+        .metric-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(15,23,42,.08);
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+    .mc-blue::before {
+        background: var(--accent);
+    }
+
+    .mc-gold::before {
+        background: var(--gold);
+    }
+
+    .mc-green::before {
+        background: var(--success);
+    }
+
+    .mc-purple::before {
+        background: var(--purple);
+    }
+
+    .metric-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        margin-bottom: 1rem;
+    }
+
+    .metric-label {
+        font-size: .78rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: var(--text-muted);
+        margin: 0 0 .3rem;
+    }
+
+    .metric-value {
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        font-size: 1.9rem;
+        font-weight: 700;
+        line-height: 1;
+        margin: 0 0 .5rem;
+    }
+
+    .section-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+    }
+
+    .section-header {
+        padding: 1.1rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .section-title {
+        font-weight: 600;
+        font-size: .95rem;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: .45rem;
+    }
+
+    .wh-table {
+        margin: 0;
+    }
+
+        .wh-table thead th {
+            background: #f8fafc;
+            font-size: .73rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--border);
+            padding: .75rem 1.2rem;
+        }
+
+        .wh-table tbody td {
+            padding: .85rem 1.2rem;
+            vertical-align: middle;
+            font-size: .875rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .wh-table tbody tr:hover td {
+            background: #f8faff;
+        }
+
+    .customer-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        background: rgba(217,119,6,.10);
+        color: var(--warning);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: .75rem;
+        font-weight: 700;
+        margin-right: .5rem;
+    }
+
+    .customer-name {
+        font-weight: 500;
+    }
+
+    .avail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: .6rem;
+        padding: 1rem 1.5rem 1.5rem;
+    }
+
+    .avail-slot {
+        border-radius: 10px;
+        padding: .75rem .9rem;
+        font-size: .8rem;
+        font-weight: 500;
+    }
+
+        .avail-slot .slot-name {
+            font-weight: 600;
+            font-size: .85rem;
+            margin-bottom: .2rem;
+        }
+
+        .avail-slot .slot-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: .35rem;
+        }
+
+    .slot-available {
+        background: var(--success-light);
+        color: var(--success);
+    }
+
+    .slot-busy {
+        background: var(--danger-light);
+        color: var(--danger);
+    }
+</style>
+
+<div class="container-fluid py-2">
+
+    <div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-2 mb-4">
+        <div>
+            <h1 class="greeting">Chào buổi sáng, Admin 👋</h1>
+            <p class="sub">Hệ thống ghi nhận dữ liệu quản trị trực tuyến từ SQL Server.</p>
+        </div>
+        <span class="date-badge" id="lblLiveDate">
+            <i class="bi bi-calendar3"></i> Đang tải ngày tháng...
+        </span>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-12 col-xl-4">
+            <div class="metric-card mc-blue">
+                <div class="metric-icon" style="background:rgba(37,99,235,.10);color:var(--accent)">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <p class="metric-label">Doanh Thu Tháng</p>
+                <div class="metric-value" style="color:var(--accent)" id="txtRevenue">Đang tính...</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-4">
+            <div class="metric-card mc-gold">
+                <div class="metric-icon" style="background:var(--gold-light);color:var(--gold)">
+                    <i class="bi bi-heart"></i>
+                </div>
+                <p class="metric-label">Tiệc Sắp Tới</p>
+                <div class="metric-value" style="color:var(--gold)" id="txtUpcomingEvents">Đang đếm...</div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-4">
+            <div class="metric-card mc-purple">
+                <div class="metric-icon" style="background:var(--purple-light);color:var(--purple)">
+                    <i class="bi bi-people"></i>
+                </div>
+                <p class="metric-label">Tổng Tài Khoản Hệ Thống</p>
+                <div class="metric-value" style="color:var(--purple)" id="txtTotalAccounts">Đang đếm...</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="section-card h-100">
+                <div class="section-header">
+                    <h2 class="section-title text-navy"><i class="bi bi-shield-check text-warning"></i> Đơn Đặt Tiệc Chờ Duyệt Cọc</h2>
+                    <span class="badge bg-warning text-dark px-2 py-1 rounded-pill" style="font-size:0.75rem;" id="txtPendingCount">0 đơn chờ duyệt</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table wh-table">
+                        <thead>
+                            <tr>
+                                <th>Mã Đơn</th>
+                                <th>Khách Hàng</th>
+                                <th>Cô Dâu - Chú Rể</th>
+                                <th>Sảnh / Ca</th>
+                                <th>Ngày Đãi</th>
+                                <th>Cọc Cần Thu</th>
+                                <th class="text-center">Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminPendingTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <span class="spinner-border spinner-border-sm text-warning me-2"></span> Đang kết nối bốc dữ liệu từ SQL Server...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 d-flex flex-column gap-4">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title"><i class="bi bi-grid-3x3-gap text-primary"></i> Trạng Thái Sảnh Hôm Nay</h2>
+                </div>
+                <div class="avail-grid" id="adminBallroomsContainer">
+                    <div class="text-center text-muted col-span-2 py-3 small">Đang quét trạng thái sảnh...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Hiển thị ngày tháng thời gian thực của máy chủ
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('lblLiveDate').innerHTML = `<i class="bi bi-calendar3"></i> ${new Date().toLocaleDateString('vi-VN', options)}`;
+
+            // Kích hoạt bốc dữ liệu đồng loạt
+            loadMonthlyRevenue();
+            loadUpcomingEvents();
+            loadTotalAccounts(); // 🌟 GỌI HÀM BỐC TỔNG SỐ TÀI KHOẢN TẠI ĐÂY
+            loadDashboardStats();
+            loadPendingDeposits();
+        });
+
+        // TÍNH DOANH THU THÁNG
+        async function loadMonthlyRevenue() {
+            const txtRevenue = document.getElementById('txtRevenue');
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const res = await fetch('/api/Admin/monthly-revenue', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    txtRevenue.textContent = data.revenue.toLocaleString('vi-VN') + ' đ';
+                } else {
+                    txtRevenue.textContent = '0 đ';
+                }
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu doanh thu tháng:", err);
+                txtRevenue.textContent = 'Lỗi tải';
+            }
+        }
+
+        // TẢI SỐ LƯỢNG TIỆC SẮP TỚI
+        async function loadUpcomingEvents() {
+            const txtUpcoming = document.getElementById('txtUpcomingEvents');
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const res = await fetch('/api/Admin/upcoming-events', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    txtUpcoming.textContent = data.count;
+                } else {
+                    txtUpcoming.textContent = '0';
+                }
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu tiệc sắp tới:", err);
+                txtUpcoming.textContent = 'Lỗi';
+            }
+        }
+
+        // 🌟 TẢI TỔNG TÀI KHOẢN HỆ THỐNG
+        async function loadTotalAccounts() {
+            const txtAccounts = document.getElementById('txtTotalAccounts');
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const res = await fetch('/api/Admin/total-accounts', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    txtAccounts.textContent = data.count;
+                } else {
+                    txtAccounts.textContent = '0';
+                }
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu tài khoản:", err);
+                txtAccounts.textContent = 'Lỗi';
+            }
+        }
+
+        // TẢI CHỈ SỐ TRẠNG THÁI SẢNH ĐỘNG
+        async function loadDashboardStats() {
+            const token = localStorage.getItem('token');
+            try {
+                const response = await fetch('/api/dashboardapi/stats', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+
+                    const ballroomContainer = document.getElementById('adminBallroomsContainer');
+                    ballroomContainer.innerHTML = '';
+
+                    data.ballrooms.forEach(sanh => {
+                        let slotClass = 'slot-available';
+                        let dotColor = 'var(--success)';
+                        let statusText = 'Trống';
+
+                        if (sanh.status === 'busy') {
+                            slotClass = 'slot-busy';
+                            dotColor = 'var(--danger)';
+                            statusText = 'Đang có tiệc';
+                        }
+
+                        ballroomContainer.innerHTML += `
+                            <div class="avail-slot ${slotClass}">
+                                <div class="slot-name">
+                                    <span class="slot-dot" style="background:${dotColor}"></span>${sanh.tenSanh}
+                                </div>
+                                <div>${statusText}</div>
+                                <div style="font-size:.72rem;margin-top:.2rem;opacity:.8">${sanh.note}</div>
+                            </div>
+                        `;
+                    });
+                }
+            } catch (error) {
+                console.error('Không thể đồng bộ hóa dữ liệu sảnh:', error);
+            }
+        }
+
+        // TẢI BẢNG DUYỆT CỌC
+        async function loadPendingDeposits() {
+            const tbody = document.getElementById('adminPendingTableBody');
+            const countBadge = document.getElementById('txtPendingCount');
+
+            try {
+                const res = await fetch('/api/Booking/admin/pending-deposits');
+                if (!res.ok) throw new Error("Không thể tải đơn hàng chờ duyệt");
+
+                const data = await res.json();
+                countBadge.innerText = `${data.length} đơn chờ duyệt`;
+
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">🎉 Tuyệt vời! Không có đơn đặt tiệc nào đang chờ duyệt cọc.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.forEach(item => {
+                    const ngayLapDon = new Date(item.ngayLap);
+                    const ngayHienTai = new Date();
+                    const diffTime = ngayHienTai - ngayLapDon;
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                    let soNgayTre = diffDays > 1 ? diffDays - 1 : 0;
+                    let tienPhat = soNgayTre * (item.tongTien * 0.01);
+                    let tienCocCanThu = (item.tongTien * 0.20) + tienPhat;
+
+                    let ghiChuPhat = soNgayTre > 0 ? `<br><small class="text-danger fw-normal">(Phạt trễ ${soNgayTre} ngày)</small>` : '';
+
+                    tbody.innerHTML += `
+                        <tr id="admin_row_${item.maDatTiecCuoi}">
+                            <td>
+                                <span class="customer-avatar">${item.tenKhachHang ? item.tenKhachHang.substring(0,2).toUpperCase() : 'KH'}</span>
+                                <span class="fw-bold text-primary">#WHD-${item.maDatTiecCuoi}</span>
+                            </td>
+                            <td><span class="customer-name">${item.tenKhachHang || 'Khách vãng lai'}</span></td>
+                            <td class="fw-semibold">${item.coDauChuRe}</td>
+                            <td><span class="badge bg-light text-dark text-uppercase small">${item.sanhCa}</span></td>
+                            <td>${item.ngayDaiTiec}</td>
+                            <td class="fw-bold text-danger">
+                                ${tienCocCanThu.toLocaleString('vi-VN')} đ
+                                ${ghiChuPhat}
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-success rounded-0 px-2" style="font-size: 0.8rem;" onclick="approveDeposit(${item.maDatTiecCuoi})">
+                                    <i class="bi bi-check-circle me-1"></i>Duyệt Cọc
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-4">Lỗi kết nối API lấy danh sách đơn chờ duyệt.</td></tr>';
+            }
+        }
+
+        // XỬ LÝ LỆNH DUYỆT CỌC
+        async function approveDeposit(maDon) {
+            const choice = confirm(`Bạn xác nhận đã kiểm tra tài khoản, khớp số dư tiền cọc cho đơn hàng #WHD-${maDon}?`);
+            if (!choice) return;
+
+            try {
+                const res = await fetch(`/api/Booking/admin/approve-deposit/${maDon}`, {
+                    method: 'POST'
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert(data.message);
+                    loadMonthlyRevenue();
+                    loadUpcomingEvents();
+                    loadDashboardStats();
+                    loadPendingDeposits();
+                } else {
+                    alert(data.message || "Có lỗi phát sinh trong quá trình phê duyệt.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Không thể đồng bộ kết nối máy chủ để thực thi lệnh duyệt cọc.");
+            }
+        }
+    </script>
+}

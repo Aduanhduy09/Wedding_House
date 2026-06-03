@@ -330,10 +330,16 @@ C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\staticwe
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\staticwebassets.development.json
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\swae.build.ex.cache
-C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\Wedding_.FF19FC12.Up2Date
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\Wedding_House.dll
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\refint\Wedding_House.dll
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\Wedding_House.pdb
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\Wedding_House.genruntimeconfig.cache
 C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\ref\Wedding_House.dll
+C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\Wedding_House.sourcelink.json
+C:\Users\Duy\source\repos\Wedding_House\Wedding_House\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
+C:\Users\Duy\source\repos\Wedding_House\Wedding_House\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+C:\Users\Duy\source\repos\Wedding_House\Wedding_House\bin\Debug\net10.0\BCrypt-Net-Next.dll
+C:\Users\Duy\source\repos\Wedding_House\Wedding_House\bin\Debug\net10.0\BouncyCastle.Cryptography.dll
+C:\Users\Duy\source\repos\Wedding_House\Wedding_House\bin\Debug\net10.0\MailKit.dll
+C:\Users\Duy\source\repos\Wedding_House\Wedding_House\bin\Debug\net10.0\MimeKit.dll

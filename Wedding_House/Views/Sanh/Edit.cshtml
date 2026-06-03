@@ -1,0 +1,44 @@
+@model Wedding_House.Models.Sanh
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Sanh</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaSanh" />
+            <div class="form-group">
+                <label asp-for="TenSanh" class="control-label"></label>
+                <input asp-for="TenSanh" class="form-control" />
+                <span asp-validation-for="TenSanh" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LoaiSanh" class="control-label"></label>
+                <input asp-for="LoaiSanh" class="form-control" />
+                <span asp-validation-for="LoaiSanh" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GhiChu" class="control-label"></label>
+                <input asp-for="GhiChu" class="form-control" />
+                <span asp-validation-for="GhiChu" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

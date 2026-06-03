@@ -1,0 +1,457 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Đặt Tiệc Cưới Trực Tuyến — Wedding House</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+    <style>
+            :root {
+                --gold: #C9A84C;
+                --navy: #0E1B2E;
+                --ivory: #FAF7F2;
+                --font-display: 'Cormorant Garamond', Georgia, serif;
+                --font-body: 'Jost', sans-serif;
+            }
+
+            body {
+                font-family: var(--font-body);
+                background: var(--ivory);
+                color: var(--navy);
+            }
+
+            .wizard-header {
+                background: var(--navy);
+                color: #fff;
+                padding: 3rem 0;
+                text-align: center;
+                border-bottom: 3px solid var(--gold);
+            }
+
+            .step-pill {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.1);
+                color: #fff;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-weight: 500;
+            }
+
+                .step-pill.active {
+                    background: var(--gold);
+                    color: var(--navy);
+                }
+
+            .wizard-card {
+                background: #fff;
+                border: 1px solid rgba(14,27,46,0.08);
+                box-shadow: 0 10px 40px rgba(14,27,46,0.06);
+                display: none;
+            }
+
+                .wizard-card.active {
+                    display: block;
+                }
+
+            .dish-select-item {
+                border: 1px solid rgba(14,27,46,0.1);
+                cursor: pointer;
+                transition: all 0.25s;
+            }
+
+                .dish-select-item:hover {
+                    border-color: var(--gold);
+                    background: var(--ivory);
+                }
+
+                .dish-select-item input:checked + label {
+                    color: var(--gold);
+                    font-weight: 600;
+                }
+    </style>
+</head>
+<body>
+
+    <header class="wizard-header">
+        <div class="container">
+            <h1 style="font-family: var(--font-display); font-style: italic;"
+                class="text-warning">
+                Lên Kế Hoạch Cho Ngày Trọng Đại
+            </h1>
+            <p class="text-white-50 m-0">Hệ thống tính toán báo giá tự động và giữ chỗ sảnh tiệc thời gian thực</p>
+
+            <div class="d-flex justify-content-center gap-4 mt-4">
+                <div><span class="step-pill active" id="pill1">1</span> <small class="d-block text-white-50 mt-1">Sảnh & Thời gian</small></div>
+                <div><span class="step-pill" id="pill2">2</span> <small class="d-block text-white-50 mt-1">Chọn Thực đơn</small></div>
+                <div><span class="step-pill" id="pill3">3</span> <small class="d-block text-white-50 mt-1">Chọn Dịch vụ</small></div>
+                <div><span class="step-pill" id="pill4">4</span> <small class="d-block text-white-50 mt-1">Xác nhận đơn</small></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container py-5" style="max-width: 900px;">
+        <div class="card wizard-card active p-4 rounded-0" id="step1">
+            <h3 class="mb-4" style="font-family: var(--font-display); font-style: italic;"><i class="bi bi-geo-alt text-warning me-2"></i>Bước 1: Chọn Không Gian & Thời Gian</h3>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label font-weight-500">Chọn Sảnh Tiệc cưới</label>
+                    <select class="form-select rounded-0" id="selectSanh">
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Ngày Tổ Chức</label>
+                    <input type="date" class="form-select rounded-0" id="bookingNgay">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Chọn Ca Tổ Chức</label>
+                    <select class="form-select rounded-0" id="selectCa">
+                        <option value="1">Buổi Trưa (11:00 — 14:00)</option>
+                        <option value="2">Buổi Tối (18:00 — 21:00)</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Số Lượng Bàn Dự Kiến</label>
+                    <input type="number" class="form-control rounded-0" id="txtSoLuongBan" value="30" min="10">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Tên Chú Rể</label>
+                    <input type="text" class="form-control rounded-0" id="txtTenChuRe" placeholder="Nhập tên chú rể">
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Tên Cô Dâu</label>
+                    <input type="text" class="form-control rounded-0" id="txtTenCoDau" placeholder="Nhập tên cô dâu">
+                </div>
+            </div>
+            <div class="mt-4 text-end">
+                <button class="btn btn-dark rounded-0 px-4" onclick="validateStep1()">Tiếp Theo: Chọn Món Ăn <i class="bi bi-arrow-right ms-1"></i></button>
+            </div>
+        </div>
+
+        <div class="card wizard-card p-4 rounded-0" id="step2">
+            <h3 class="mb-2" style="font-family: var(--font-display); font-style: italic;"><i class="bi bi-egg-fried text-warning me-2"></i>Bước 2: Tuyển Chọn Tinh Hoa Ẩm Thực</h3>
+            <p class="text-muted small mb-4">Mẹo: Nên chọn đủ 1 món Khai vị, 3-4 món Chính và 1 món Tráng miệng để thực đơn trọn vẹn.</p>
+
+            <div class="row g-2 overflow-auto" style="max-height: 400px;" id="dishSelectionList">
+            </div>
+
+            <div class="mt-4 d-flex justify-content-between">
+                <button class="btn btn-outline-dark rounded-0" onclick="goBack(1)"><i class="bi bi-arrow-left me-1"></i> Quay lại</button>
+                <button class="btn btn-dark rounded-0 px-4" onclick="validateStep2()">Tiếp Theo: Chọn Dịch Vụ <i class="bi bi-arrow-right ms-1"></i></button>
+            </div>
+        </div>
+
+        <div class="card wizard-card p-4 rounded-0" id="step3">
+            <h3 class="mb-4" style="font-family: var(--font-display); font-style: italic;"><i class="bi bi-stars text-warning me-2"></i>Bước 3: Chọn Dịch Vụ Kèm Theo</h3>
+
+            <div class="row g-3 overflow-auto" style="max-height: 400px;" id="servicesContainer">
+                <div class="text-center w-100 py-4 text-muted small">
+                    <span class="spinner-border spinner-border-sm text-warning"></span> Đang tải danh sách dịch vụ...
+                </div>
+            </div>
+
+            <div class="mt-4 pt-3 d-flex justify-content-between border-top">
+                <button class="btn btn-outline-dark rounded-0 px-4" onclick="goBack(2)"><i class="bi bi-arrow-left me-1"></i> Quay Lại</button>
+                <button class="btn text-white rounded-0 px-4" style="background-color: #0E1B2E;" onclick="validateStep3()">Tiếp Theo: Xác Nhận <i class="bi bi-arrow-right ms-1"></i></button>
+            </div>
+        </div>
+
+        <div class="card wizard-card p-4 rounded-0" id="step4">
+            <h3 class="mb-4" style="font-family: var(--font-display); font-style: italic;"><i class="bi bi-check-all text-success me-2"></i>Bước 4: Xác Nhận Báo Giá Hệ Thống</h3>
+
+            <div class="bg-light p-4 border mb-4">
+                <h5 class="border-bottom pb-2 mb-3" style="font-family: var(--font-display);">Tóm Tắt Đơn Đặt Tiệc</h5>
+                <p class="mb-2"><strong>Khách hàng đặt:</strong> <span id="lblConfirmUser"></span></p>
+                <p class="mb-2"><strong>Sảnh cưới:</strong> <span id="lblConfirmSanh"></span></p>
+                <p class="mb-2"><strong>Thời gian tổ chức:</strong> <span id="lblConfirmThoiGian"></span></p>
+                <p class="mb-2"><strong>Quy mô:</strong> <span id="lblConfirmSoBan"></span> bàn tiệc</p>
+                <p class="mb-3 text-muted small"><em>*(Đã bao gồm chi phí Món ăn và các Dịch vụ đi kèm)*</em></p>
+
+                <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                    <h4 class="m-0 text-navy" style="font-family: var(--font-display);">Tổng Chi Phí Dự Kiến:</h4>
+                    <h3 class="text-danger m-0 font-weight-600" id="lblTotalCost">0 VNĐ</h3>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-outline-dark rounded-0" onclick="goBack(3)"><i class="bi bi-arrow-left me-1"></i> Thay đổi Dịch vụ</button>
+                <button class="btn btn-success rounded-0 px-5" onclick="submitFinalBooking()"><i class="bi bi-heart-fill me-2"></i> Gửi Đơn Đặt Tiệc Ngay</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+            let fullSaloons = [];
+            let selectedSanhObject = null;
+            let selectedDishesIds = [];
+            let selectedServicesIds = [];
+            let totalServiceCost = 0;
+            const costPerDishFake = 250000;
+
+            document.addEventListener('DOMContentLoaded', () => {
+                const token = localStorage.getItem('token');
+                if(!token) {
+                    alert('Vui lòng đăng nhập tài khoản trước khi thực hiện chức năng đặt tiệc!');
+                    window.location.href = '/Taikhoan/Login';
+                    return;
+                }
+
+                // Ưu tiên bốc Họ và tên đầy đủ từ trình duyệt
+                const username = localStorage.getItem('username');
+                const fullName = localStorage.getItem('fullName') || username;
+                document.getElementById('lblConfirmUser').innerText = fullName;
+
+                const tomorrow = new Date();
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                document.getElementById('bookingNgay').value = tomorrow.toISOString().split('T')[0];
+
+                fetchSaloonsToSelect();
+                fetchDishesToSelect();
+                fetchServicesToSelect();
+            });
+
+            async function fetchSaloonsToSelect() {
+                const select = document.getElementById('selectSanh');
+                select.innerHTML = '<option value="">Đang tải danh sách sảnh...</option>';
+
+                try {
+                    const res = await fetch('/api/PublicData/saloons');
+                    if (!res.ok) throw new Error('Không thể kết nối API Sảnh');
+
+                    const rawData = await res.json();
+
+                    fullSaloons = rawData.map(s => ({
+                        maSanh: s.maSanh || s.MaSanh,
+                        tenSanh: s.tenSanh || s.TenSanh || 'Sảnh Chưa Đặt Tên',
+                        sucChua: s.sucChua || s.SucChua || 0,
+                        giaThue: s.giaThue || s.GiaThue || 0
+                    }));
+
+                    select.innerHTML = '';
+
+                    if (fullSaloons.length === 0) {
+                        select.innerHTML = '<option value="">Không có sảnh nào khả dụng lúc này</option>';
+                        return;
+                    }
+
+                    fullSaloons.forEach(s => {
+                        select.innerHTML += `<option value="${s.maSanh}">${s.tenSanh} (Sức chứa: ${s.sucChua} khách — Giá thuê: ${s.giaThue.toLocaleString('vi-VN')} VNĐ)</option>`;
+                    });
+                } catch (error) {
+                    console.error("Lỗi khi tải danh sách sảnh:", error);
+                    select.innerHTML = '<option value="">⚠️ Lỗi kết nối dữ liệu sảnh!</option>';
+                }
+            }
+
+            async function fetchDishesToSelect() {
+                const res = await fetch('/api/PublicData/dishes');
+                const dishes = await res.json();
+                const listContainer = document.getElementById('dishSelectionList');
+                listContainer.innerHTML = '';
+                dishes.forEach(d => {
+                    listContainer.innerHTML += `
+                        <div class="col-md-6">
+                            <div class="p-2 d-flex align-items-center gap-2 dish-select-item border">
+                                <input type="checkbox" id="chk_dish_${d.maMonAn}" value="${d.maMonAn}" class="form-check-input ms-1 shadow-none dish-checkbox" onchange="updateSelectedDishes()">
+                                <label for="chk_dish_${d.maMonAn}" class="form-check-label text-truncate small flex-grow-1">${d.tenMon} <span class="text-warning">(${d.loaiMon})</span></label>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            async function fetchServicesToSelect() {
+                try {
+                    const res = await fetch('/api/PublicData/services');
+                    if(!res.ok) throw new Error('Không thể tải dịch vụ');
+                    const services = await res.json();
+                    const container = document.getElementById('servicesContainer');
+                    container.innerHTML = '';
+                    services.forEach(dv => {
+                        container.innerHTML += `
+                            <div class="col-md-6">
+                                <label class="d-block border p-3" style="cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#C9A84C'" onmouseout="this.style.borderColor='#dee2e6'">
+                                    <div class="form-check d-flex justify-content-between align-items-center mb-0">
+                                        <div>
+                                            <input class="form-check-input service-checkbox" type="checkbox" value="${dv.maDv}" data-price="${dv.donGia}" onchange="updateSelectedServices()" style="cursor: pointer;">
+                                            <span class="ms-2 text-dark" style="font-family: 'Jost', sans-serif;">${dv.tenDv}</span>
+                                        </div>
+                                        <span class="fw-bold text-danger">${(dv.donGia || 0).toLocaleString('vi-VN')} đ</span>
+                                    </div>
+                                </label>
+                            </div>
+                        `;
+                    });
+                } catch(e) {
+                    document.getElementById('servicesContainer').innerHTML = '<div class="text-danger text-center w-100">Không thể kết nối đến dữ liệu dịch vụ.</div>';
+                }
+            }
+
+            // 🌟 ĐÃ SỬA: HÀM NÀY ĐÃ ĐƯỢC TÍCH HỢP KIỂM TRA SỨC CHỨA SẢNH TỪ API
+            async function validateStep1() {
+                const maSanh = document.getElementById('selectSanh').value;
+                const ngay = document.getElementById('bookingNgay').value;
+                const maCa = parseInt(document.getElementById('selectCa').value);
+                const soBan = parseInt(document.getElementById('txtSoLuongBan').value); // Lấy số lượng bàn khách nhập
+
+                selectedSanhObject = fullSaloons.find(s => s.maSanh == maSanh);
+                if (!selectedSanhObject) {
+                    alert("Vui lòng chọn một sảnh hợp lệ!");
+                    return;
+                }
+
+                if (!soBan || soBan < 10) {
+                    alert("Vui lòng nhập số lượng bàn hợp lệ (Tối thiểu 10 bàn)!");
+                    return;
+                }
+
+                try {
+                    // 1. GỌI API KIỂM TRA SỨC CHỨA SẢNH (BẢNG THAMSO)
+                    const capacityRes = await fetch(`/api/Booking/check-capacity?maSanh=${maSanh}&soBanDuKien=${soBan}`);
+                    if (!capacityRes.ok) {
+                        const capacityData = await capacityRes.json();
+                        alert(capacityData.message); // Hiển thị thông báo vượt quá số bàn từ Server
+                        return; // CHẶN LẠI NGAY, không cho chuyển qua Bước 2
+                    }
+
+                    // 2. GỌI API KIỂM TRA TRÙNG LỊCH (BẢNG TIECCUOI)
+                    const res = await fetch(`/api/Booking/check-availability?maSanh=${maSanh}&ngayToChuc=${ngay}&maCa=${maCa}`);
+                    if(!res.ok) {
+                        const data = await res.json();
+                        alert(data.message); // Hiển thị thông báo sảnh đã bị người khác đặt
+                        return; // CHẶN LẠI NGAY
+                    }
+
+                    // NẾU HỢP LỆ CẢ 2 ĐIỀU KIỆN TRÊN -> CHO CHUYỂN QUA BƯỚC 2
+                    switchStep(2);
+                } catch (error) {
+                    console.error("Lỗi xác thực:", error);
+                    alert('Lỗi kết nối khi xác thực thông tin sảnh! Vui lòng thử lại.');
+                }
+            }
+
+            function updateSelectedDishes() {
+                selectedDishesIds = Array.from(document.querySelectorAll('.dish-checkbox:checked')).map(cb => parseInt(cb.value));
+            }
+
+            function updateSelectedServices() {
+                const checkboxes = Array.from(document.querySelectorAll('.service-checkbox:checked'));
+                selectedServicesIds = checkboxes.map(cb => parseInt(cb.value));
+                totalServiceCost = checkboxes.reduce((sum, cb) => sum + parseFloat(cb.getAttribute('data-price') || 0), 0);
+            }
+
+            function validateStep2() {
+                if(selectedDishesIds.length === 0) {
+                    alert('Vui lòng tích chọn danh sách món ăn để nhà hàng lên thực đơn nấu nướng!');
+                    return;
+                }
+                switchStep(3);
+            }
+
+            function validateStep3() {
+                const soBan = parseInt(document.getElementById('txtSoLuongBan').value);
+                const giaThueSanh = selectedSanhObject.giaThue || 0;
+
+                const tongTienMonAn = selectedDishesIds.length * costPerDishFake * soBan;
+                const tongChiPhi = giaThueSanh + tongTienMonAn + totalServiceCost;
+
+                document.getElementById('lblConfirmSanh').innerText = selectedSanhObject.tenSanh;
+
+                const caTextHienThi = document.getElementById('selectCa').value === "1" ? "Buổi Trưa" : "Buổi Tối";
+                document.getElementById('lblConfirmThoiGian').innerText = `${caTextHienThi} ngày ${document.getElementById('bookingNgay').value}`;
+
+                document.getElementById('lblConfirmSoBan').innerText = soBan;
+                document.getElementById('lblTotalCost').innerText = `${tongChiPhi.toLocaleString()} VNĐ`;
+                document.getElementById('lblTotalCost').setAttribute('data-amount', tongChiPhi);
+
+                switchStep(4);
+            }
+
+            async function submitFinalBooking() {
+                 const tenChuRe = document.getElementById('txtTenChuRe').value.trim();
+                 const tenCoDau = document.getElementById('txtTenCoDau').value.trim();
+
+                 if (!tenChuRe || !tenCoDau) {
+                     alert('Vui lòng nhập đầy đủ tên Cô dâu và Chú rể!');
+                     return;
+                 }
+
+                 const soBan = parseInt(document.getElementById('txtSoLuongBan').value);
+                 const totalAmount = parseFloat(document.getElementById('lblTotalCost').getAttribute('data-amount'));
+                 const maCa = parseInt(document.getElementById('selectCa').value);
+                 const username = localStorage.getItem('username');
+                 let maKH = parseInt(localStorage.getItem('maKhachHang'));
+
+                 if (!maKH && username) {
+                     try {
+                         const profileRes = await fetch(`/api/Taikhoan/get-profile?username=${username}`);
+                         if (profileRes.ok) {
+                             const profileData = await profileRes.json();
+                             maKH = profileData.maKhachHang;
+                             localStorage.setItem('maKhachHang', maKH);
+                         }
+                     } catch (e) {
+                         console.error("Không thể tự động bốc mã KH:", e);
+                     }
+                 }
+
+                 if (!maKH) {
+                     alert('Hệ thống không thể định danh tài khoản. Vui lòng đăng xuất và đăng nhập lại!');
+                     return;
+                 }
+
+                 const bodyPayload = {
+                     maKhachHang: maKH,
+                     maSanh: selectedSanhObject.maSanh,
+                     ngayToChuc: document.getElementById('bookingNgay').value,
+                     maCa: maCa,
+                     tenChuRe: tenChuRe,
+                     tenCoDau: tenCoDau,
+                     soLuongBan: soBan,
+                     tongTien: totalAmount,
+                     donGiaTamTinhMoiMon: costPerDishFake,
+                     danhSachMaMonAn: selectedDishesIds,
+                     danhSachMaDichVu: selectedServicesIds
+                 };
+
+                 try {
+                     const res = await fetch('/api/Booking/create', {
+                         method: 'POST',
+                         headers: { 'Content-Type': 'application/json' },
+                         body: JSON.stringify(bodyPayload)
+                     });
+
+                     const data = await res.json();
+                     if (res.ok) {
+                         alert('Tiếp nhận đơn thành công!');
+                         window.location.href = `/Home/LichSuDatTiec?id=${data.maDatTiec}`;
+                     } else {
+                         alert(data.message);
+                     }
+                 } catch (err) {
+                     alert('Không thể kết nối đến máy chủ.');
+                 }
+             }
+
+            function switchStep(stepNum) {
+                document.querySelectorAll('.wizard-card').forEach(c => c.classList.remove('active'));
+                document.querySelectorAll('.step-pill').forEach(p => p.classList.remove('active'));
+
+                document.getElementById(`step${stepNum}`).classList.add('active');
+                document.getElementById(`pill${stepNum}`).classList.add('active');
+            }
+
+            function goBack(stepNum) {
+                switchStep(stepNum);
+            }
+    </script>
+</body>
+</html>
