@@ -1,35 +1,218 @@
 @model IEnumerable<Wedding_House.Models.Monan>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Quản Lý Danh Mục Món Ăn";
 }
 
-<h1>Index</h1>
+<style>
+    :root {
+        --navy: #0E1B2E;
+        --gold: #c9963c;
+        --border: #e2e8f0;
+        --radius: 14px;
+    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TenMonAn)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TenMonAn)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MaMonAn">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MaMonAn">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MaMonAn">Delete</a>
-            </td>
-        </tr>
+    .section-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+    }
+
+    .section-header {
+        padding: 1.2rem 1.5rem;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .wh-table {
+        margin: 0;
+    }
+
+        .wh-table thead th {
+            background: #f8fafc;
+            font-size: .75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            color: #64748b;
+            border-bottom: 1px solid var(--border);
+            padding: .9rem 1.2rem;
+        }
+
+        .wh-table tbody td {
+            padding: 0.9rem 1.2rem;
+            vertical-align: middle;
+            font-size: .875rem;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .wh-table tbody tr:hover td {
+            background: #f8faff;
+        }
+</style>
+
+<div class="container-fluid py-3">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="fw-bold text-navy" style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.85rem;">
+                <i class="bi bi-egg-fried text-gold me-2"></i>Quản Lý Danh Mục Món Ăn
+            </h1>
+            <p class="text-muted small m-0">Xem hồ sơ, điều chỉnh tên gọi hoặc gỡ bỏ các món ăn thuộc hệ thống ẩm thực Wedding House.</p>
+        </div>
+        <button class="btn text-white rounded-0 px-3 fw-medium" style="background-color: var(--navy);" onclick="alert('Chức năng Thêm món mới đang được xây dựng!')">
+            <i class="bi bi-plus-lg me-1"></i> Thêm món ăn mới
+        </button>
+    </div>
+
+    <div class="section-card shadow-sm">
+        <div class="section-header">
+            <h5 class="m-0 fw-bold text-navy" style="font-size: 0.95rem;">
+                <i class="bi bi-list-stars text-primary me-2"></i>Thực Đơn Nhà Hàng Trực Tuyến
+            </h5>
+            <span class="badge bg-dark rounded-0 px-3 py-1.5">@Model.Count() món ăn hiện có</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table wh-table align-middle">
+                <thead>
+                    <tr>
+                        <th style="width: 150px;">Mã Món Ăn</th>
+                        <th>Tên Món Ăn Thực Đơn</th>
+                        <th class="text-center" style="width: 250px;">Hành Động Quản Trị</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-bold text-primary">#MON-@item.MaMonAn</td>
+                            <td class="fw-semibold text-navy" id="name_display_@item.MaMonAn">@item.TenMonAn</td>
+                            <td class="text-center">
+                                <div class="d-flex justify-content-center gap-2">
+                                    <button class="btn btn-sm btn-outline-primary rounded-0 px-2.5" onclick="moKhungDoiTen(@item.MaMonAn)">
+                                        <i class="bi bi-pencil-square me-1"></i>Sửa
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger rounded-0 px-2.5" onclick="xuLyXoaMon(@item.MaMonAn)">
+                                        <i class="bi bi-trash3 me-1"></i>Xóa
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editDishModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-0 border-0 shadow">
+            <div class="modal-header text-white rounded-0" style="background-color: var(--navy); border-bottom: 2px solid var(--gold);">
+                <h5 class="modal-title" style="font-family: 'Cormorant Garamond', serif; font-size: 1.25rem;">
+                    <i class="bi bi-pencil-square me-2 text-warning"></i>Thay Đổi Tên Món Ăn
+                </h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 bg-white">
+                <input type="hidden" id="editMaMonAn" />
+                <div class="mb-2">
+                    <label class="form-label small fw-bold text-uppercase text-muted">Tên món ăn mới:</label>
+                    <input type="text" class="form-control rounded-0 shadow-none fw-semibold" id="editTenMonAn" placeholder="Nhập tên món ăn cần chỉnh sửa..." />
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light rounded-0 d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-outline-dark rounded-0 px-3" data-bs-dismiss="modal">Hủy bỏ</button>
+                <button type="button" class="btn text-white rounded-0 px-4" style="background-color: var(--navy);" onclick="xacNhanLuuThayDoi()">Xác nhận lưu</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let modalInstance = null;
+
+        // 1. Hàm mở Khung Modal Popup đổi tên món ăn
+        function moKhungDoiTen(id) {
+            // 🌟 CẢI TIẾN: Tự động tìm đến dòng tương ứng lấy ra tên món ăn thật bằng chữ trên màn hình
+            const tenMonAnThat = document.getElementById(`name_display_${id}`).innerText.trim();
+
+            document.getElementById('editMaMonAn').value = id;
+            document.getElementById('editTenMonAn').value = tenMonAnThat; // Đổ chữ thật vào ô input
+
+            const modalElement = document.getElementById('editDishModal');
+            modalInstance = new bootstrap.Modal(modalElement);
+            modalInstance.show();
+        }
+
+        // 2. Luồng xử lý khi bấm nút "Xác nhận lưu" tên món mới
+        async function xacNhanLuuThayDoi() {
+            const id = document.getElementById('editMaMonAn').value;
+            const newName = document.getElementById('editTenMonAn').value.trim();
+
+            if (!newName) {
+                alert("Vui lòng điền tên món ăn, không được để trống!");
+                return;
+            }
+
+            // Hộp thoại bẫy xác nhận
+            const choice = confirm("Bạn có chắc chắn muốn xác nhận thay đổi tên món ăn này chứ?");
+            if (!choice) return;
+
+            try {
+                const res = await fetch('/api/Monan/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ maMonAn: parseInt(id), tenMonAn: newName })
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert(data.message);
+                    if (modalInstance) modalInstance.hide();
+
+                    // Cập nhật giá trị hiển thị trực tiếp trên dòng mà không cần tải lại toàn bộ trang
+                    document.getElementById(`name_display_${id}`).innerText = newName;
+                } else {
+                    alert(data.message || "Gặp sự cố khi lưu thông tin.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Không thể kết nối với máy chủ để cập nhật dữ liệu.");
+            }
+        }
+
+        // 3. Luồng xử lý khi thực hiện hành động Xóa Món Ăn
+        async function xuLyXoaMon(id) {
+            // 🌟 CẢI TIẾN: Tự động bóc tách tên món ăn thật để đưa vào câu cảnh báo
+            const tenMonAnThat = document.getElementById(`name_display_${id}`).innerText.trim();
+
+            // Hộp thoại bẫy cảnh báo xác nhận trước khi thực hiện xóa món khỏi hệ thống
+            const choice = confirm(`Cảnh báo: Bạn có chắc chắn muốn xóa món ăn [ ${tenMonAnThat} ] ra khỏi cơ sở dữ liệu hệ thống chứ?`);
+            if (!choice) return;
+
+            try {
+                const res = await fetch(`/api/Monan/delete/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert(data.message);
+                    window.location.reload();
+                } else {
+                    alert(data.message || "Gặp sự cố khi xóa món ăn.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Không thể kết nối máy chủ để thực hiện lệnh xóa.");
+            }
+        }
+    </script>
 }
-    </tbody>
-</table>

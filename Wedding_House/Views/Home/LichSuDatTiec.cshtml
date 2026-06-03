@@ -74,13 +74,29 @@
                 font-weight: 500;
                 color: var(--navy);
             }
+
+            /* 🌟 CẤU HÌNH IN ẤN: Ẩn các nút bấm khi xuất file PDF hoặc kích hoạt lệnh in */
+            @@media print {
+                .no-print {
+                    display: none !important;
+                }
+
+                body {
+                    background: #fff;
+                    padding: 0;
+                }
+
+                .invoice-box {
+                    border: none;
+                    box-shadow: none;
+                }
+            }
     </style>
 </head>
 <body>
 
     <div class="container">
         <div class="invoice-box">
-            <!-- HEADER BIÊN LAI -->
             <div class="invoice-header d-flex justify-content-between align-items-center flex-wrap g-3">
                 <div>
                     <h2 class="brand-title">Wedding House</h2>
@@ -92,14 +108,13 @@
                 </div>
             </div>
 
-            <!-- NỘI DUNG CHI TIẾT -->
             <div class="p-4 p-md-5">
                 <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom flex-wrap g-2">
                     <div>
                         <span class="small text-muted">Mã định danh đơn tiệc:</span>
                         <strong class="text-danger ms-1" id="txtMaDon">#0000</strong>
                     </div>
-                    <!-- STATUS BADGE CHỜ DUYỆT CỦA NHÀ HÀNG -->
+
                     <div class="status-badge">
                         <i class="bi bi-clock-history me-1"></i> Trạng thái: Chờ duyệt
                     </div>
@@ -154,28 +169,32 @@
                     </table>
                 </div>
 
-                <!-- TỔNG TIỀN BIÊN LAI -->
                 <div class="d-flex justify-content-end align-items-center gap-3 bg-light p-3 border mb-5">
                     <span class="text-uppercase small tracking-wider text-muted font-weight-500">Thành tiền toàn bộ hóa đơn:</span>
                     <h3 class="text-danger m-0 font-weight-600" id="txtTongTien">0 VNĐ</h3>
                 </div>
 
-                <!-- KHUYÊN BẢO CHĂM SÓC KHÁCH HÀNG -->
                 <div class="alert alert-secondary rounded-0 small text-muted border-0 p-3 mb-4">
                     <i class="bi bi-info-circle-fill text-dark me-2"></i>
-                    <strong>Lưu ý từ ban quản lý Wedding House:</strong> Biên lai này được tạo tự động bởi hệ thống lập kế hoạch trực tuyến. Lịch trống của đại sảnh hiện tại đang được tạm giữ tạm thời cho bạn trong vòng 24 giờ. Quản trị viên của nhà hàng sẽ sớm gọi điện trực tiếp để xác nhận và phê duyệt hợp đồng chính thức.
+                    <strong>Lưu ý từ ban quản lý Wedding House:</strong> Biên lai này được tạo tự động bởi hệ thống lập kế hoạch trực tuyến.
+                    Lịch trống của đại sảnh hiện tại đang được tạm giữ tạm thời cho bạn trong vòng 24 giờ.
+                    Quản trị viên của nhà hàng sẽ sớm gọi điện trực tiếp để xác nhận và phê duyệt hợp đồng chính thức.
                 </div>
 
-                <div class="text-center">
-                    <a href="/Home/Index" class="btn btn-navy text-white rounded-0 px-4 me-2"><i class="bi bi-house me-1"></i> Về Trang Chủ</a>
-                    <button class="btn btn-outline-dark rounded-0 px-4" onclick="window.print()"><i class="bi bi-printer me-1"></i> In Biên Lai này</button>
+                <div class="text-center d-flex justify-content-center gap-2 no-print">
+                    <a href="/Home/Index" class="btn text-white rounded-0 px-4" style="background-color: #0E1B2E; border-color: #0E1B2E;">
+                        <i class="bi bi-house-door me-1"></i> Về Trang Chủ
+                    </a>
+                    <button class="btn btn-outline-dark rounded-0 px-4" onclick="window.print()">
+                        <i class="bi bi-printer me-1"></i> In Biên Lai này
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-                                  document.addEventListener('DOMContentLoaded', async () => {
+            document.addEventListener('DOMContentLoaded', async () => {
                 // 1. Lấy mã ID đơn hàng từ thanh URL địa chỉ trình duyệt (?id=...)
                 const urlParams = new URLSearchParams(window.location.search);
                 const bookingId = urlParams.get('id');
@@ -186,7 +205,7 @@
                     return;
                 }
 
-                // 🌟 ĐÃ SỬA TẠI ĐÂY: Ưu tiên bốc họ tên đầy đủ từ trình duyệt
+                // Ưu tiên bốc họ tên đầy đủ từ trình duyệt
                 const username = localStorage.getItem('username');
                 const fullName = localStorage.getItem('fullName') || username || 'Khách Hàng';
 
@@ -194,7 +213,7 @@
                 document.getElementById('txtMaDon').innerText = `#WHD-${bookingId}`;
                 document.getElementById('txtNgayLap').innerText = `Ngày lập: ${new Date().toLocaleDateString('vi-VN')}`;
 
-                // 🌟 ĐÃ SỬA TẠI ĐÂY: Gán họ tên đầy đủ vào vị trí Chủ nhân tiệc cưới
+                // Gán họ tên đầy đủ vào vị trí Chủ nhân tiệc cưới
                 const txtTenKhach = document.getElementById('txtTenKhach');
                 if (txtTenKhach) {
                     txtTenKhach.innerText = fullName;
@@ -235,7 +254,6 @@
                     if (txtTongTien) {
                         txtTongTien.innerText = `${data.tongTien.toLocaleString('vi-VN')} VNĐ`;
                     } else {
-                        // Săn lùng theo Class hoặc cấu trúc thẻ nếu giao diện đang thiết kế theo khung mẫu cũ
                         const totalBoxes = document.querySelectorAll('.text-danger.m-0.font-weight-600') || document.querySelectorAll('h3.text-danger');
                         totalBoxes.forEach(box => {
                             box.innerText = `${data.tongTien.toLocaleString('vi-VN')} VNĐ`;
@@ -244,7 +262,6 @@
 
                 } catch (err) {
                     console.error(err);
-                    // Đoạn này bẫy lỗi hiển thị thông báo cũ của bạn nếu có phần tử HTML nào bị null
                     alert('Có lỗi xảy ra khi kết nối đồng bộ hóa dữ liệu biên lai.');
                 }
             });

@@ -50,7 +50,7 @@ namespace Wedding_House.Controllers
             var khachHang = await _context.Khachhangs.FirstOrDefaultAsync(k => k.MaTaiKhoan == taiKhoan.MaTaiKhoan);
             if (khachHang == null) return Ok(new List<object>());
 
-            // 🌟 ĐÃ CẬP NHẬT: Kết nối sang bảng HOADON và lấy các thông tin cần thiết
+            // ĐÃ CẬP NHẬT: Kết nối sang bảng HOADON và lấy các thông tin cần thiết
             var history = await _context.Tieccuois
                 .Where(t => t.MaKhachHang == khachHang.MaKhachHang)
                 .OrderByDescending(t => t.NgayDaiTiec)
@@ -79,6 +79,12 @@ namespace Wedding_House.Controllers
                 .ToListAsync();
 
             return Ok(history);
+        }
+        // Mở đường dẫn hiển thị trang Quên Mật Khẩu
+        [HttpGet]
+        public IActionResult QuenMatKhau()
+        {
+            return View();
         }
     }
 }

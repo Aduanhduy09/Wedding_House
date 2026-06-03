@@ -24,21 +24,51 @@ namespace Wedding_House.Controllers
         }
 
         // ==========================================
-        // 1. HÀM TRỢ GIÚP: GỬI EMAIL QUA CỔNG GOOGLE
+        // 1. HÀM TRỢ GIÚP: GỬI EMAIL MÃ OTP ĐĂNG KÝ
         // ==========================================
         private void SendEmailOTP(string toEmail, string otpCode)
         {
             var message = new MimeMessage();
-            // ĐÃ SỬA: Đồng bộ email người gửi trùng với tài khoản authenticate bên dưới
             message.From.Add(new MailboxAddress("Nhà hàng Wedding House", "weddinghouseadmin@gmail.com"));
             message.To.Add(new MailboxAddress("", toEmail));
             message.Subject = "Mã OTP Xác Thực Tài Khoản Wedding House";
-
             message.Body = new TextPart("html")
             {
                 Text = $"<h3>Cảm ơn bạn đã đăng ký!</h3>" +
                        $"<p>Mã OTP kích hoạt tài khoản của bạn là: <b style='color:red; font-size:20px;'>{otpCode}</b></p>" +
                        $"<p>Mã này có hiệu lực trong vòng 5 phút.</p>"
+            };
+            using (var client = new SmtpClient())
+            {
+                client.Connect("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
+                client.Authenticate("weddinghouseadmin@gmail.com", "pwof ydld xqgf jehc");
+                client.Send(message);
+                client.Disconnect(true);
+            }
+        }
+
+        // ==========================================
+        // 1.5 HÀM TRỢ GIÚP: GỬI EMAIL KHÔI PHỤC MẬT KHẨU
+        // ==========================================
+        private void SendEmailResetPassword(string toEmail, string otpCode)
+        {
+            var message = new MimeMessage();
+            message.From.Add(new MailboxAddress("Nhà hàng Wedding House", "weddinghouseadmin@gmail.com"));
+            message.To.Add(new MailboxAddress("", toEmail));
+            message.Subject = "Mã Khôi Phục Mật Khẩu - Wedding House";
+
+            message.Body = new TextPart("html")
+            {
+                Text = $@"
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 10px;'>
+                        <h2 style='color: #0e1b2e;'>Khôi phục mật khẩu</h2>
+                        <p>Bạn vừa yêu cầu khôi phục mật khẩu trên hệ thống Wedding House.</p>
+                        <p>Mã xác nhận (OTP) của bạn là:</p>
+                        <div style='background-color: #f1f5f9; padding: 15px; text-align: center; font-size: 28px; font-weight: bold; letter-spacing: 5px; color: #2563eb; border-radius: 8px; margin: 20px 0;'>
+                            {otpCode}
+                        </div>
+                        <p style='color: #64748b; font-size: 13px;'>Tuyệt đối không chia sẻ mã này cho bất kỳ ai. Mã này sẽ giúp bạn thiết lập lại mật khẩu mới.</p>
+                    </div>"
             };
 
             using (var client = new SmtpClient())
@@ -56,58 +86,46 @@ namespace Wedding_House.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
-            // 🌟 RÀO CHẮN 1: Kiểm tra xem Email này đã có ai dùng chưa
             var isEmailExist = await _context.Khachhangs.AnyAsync(k => k.Email == model.Email);
             if (isEmailExist)
             {
                 return BadRequest(new { message = "Email này đã được sử dụng bởi một tài khoản khác!" });
             }
 
-            // 🌟 RÀO CHẮN 2: Kiểm tra xem Số điện thoại này đã có ai dùng chưa
             var isPhoneExist = await _context.Khachhangs.AnyAsync(k => k.DienThoai == model.DienThoai);
             if (isPhoneExist)
             {
                 return BadRequest(new { message = "Số điện thoại này đã được đăng ký hệ thống!" });
             }
-            // Tìm kiếm tài khoản xem đã tồn tại tên đăng nhập này chưa
-            var existingUser = await _context.Taikhoans.FirstOrDefaultAsync(u => u.TenDangNhap == model.Username);
 
+            var existingUser = await _context.Taikhoans.FirstOrDefaultAsync(u => u.TenDangNhap == model.Username);
             if (existingUser != null)
             {
-                // Trường hợp 1: Tài khoản đã kích hoạt (IsConfirmed = 1) hoặc dạng đặc biệt (NULL) -> Chặn luôn
                 if (existingUser.IsConfirmed == true || existingUser.IsConfirmed == null)
                 {
                     return BadRequest(new { message = "Tài khoản này đã tồn tại và đã được xác thực trong hệ thống!" });
                 }
-                // Trường hợp 2: Tài khoản đã có nhưng CHƯA kích hoạt (IsConfirmed = 0) -> Tiến hành dọn dẹp rác
                 else
                 {
-                    // 1. Tìm và xóa Khách hàng liên quan trước để tránh lỗi ràng buộc khóa ngoại (FK)
                     var existingKhach = await _context.Khachhangs.FirstOrDefaultAsync(k => k.MaTaiKhoan == existingUser.MaTaiKhoan);
                     if (existingKhach != null)
                     {
                         _context.Khachhangs.Remove(existingKhach);
                     }
-
-                    // 2. Xóa tài khoản chưa kích hoạt cũ
                     _context.Taikhoans.Remove(existingUser);
-
-                    // 3. Lưu thay đổi tạm thời để giải phóng Username hoàn toàn
                     await _context.SaveChangesAsync();
                 }
             }
 
-            // ---- HỆ THỐNG TIẾP TỤC TẠO TÀI KHOẢN MỚI SAU KHI ĐÃ DỌN SẠCH RÁC ----
             string randomOtp = new Random().Next(100000, 999999).ToString();
-
             var taiKhoanMoi = new Taikhoan
             {
                 TenDangNhap = model.Username,
                 MatKhau = BCrypt.Net.BCrypt.HashPassword(model.Password),
                 VaiTro = "KhachHang",
-                IsConfirmed = false, // Mặc định bằng 0 (False), phải qua OTP mới kích hoạt
+                IsConfirmed = false,
                 OtpCode = randomOtp,
-                OtpExpired = DateTime.Now.AddMinutes(5) // Hết hạn sau 5 phút
+                OtpExpired = DateTime.Now.AddMinutes(5)
             };
             _context.Taikhoans.Add(taiKhoanMoi);
             await _context.SaveChangesAsync();
@@ -122,9 +140,7 @@ namespace Wedding_House.Controllers
             _context.Khachhangs.Add(khachHangMoi);
             await _context.SaveChangesAsync();
 
-            // Gửi email chứa mã OTP mới về hòm thư của khách
             SendEmailOTP(model.Email, randomOtp);
-
             return Ok(new { message = "Đăng ký thành công! Vui lòng kiểm tra Gmail để lấy mã OTP xác thực." });
         }
 
@@ -134,16 +150,12 @@ namespace Wedding_House.Controllers
         [HttpPost("verify-otp")]
         public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpModel model)
         {
-            var user = await _context.Taikhoans
-                .FirstOrDefaultAsync(u => u.TenDangNhap == model.Username);
+            var user = await _context.Taikhoans.FirstOrDefaultAsync(u => u.TenDangNhap == model.Username);
 
             if (user == null) return NotFound(new { message = "Không tìm thấy tài khoản!" });
-
             if (user.OtpCode != model.OtpCode) return BadRequest(new { message = "Mã OTP không chính xác!" });
-
             if (user.OtpExpired < DateTime.Now) return BadRequest(new { message = "Mã OTP đã hết hạn!" });
 
-            // Nếu mọi thứ đều đúng -> Kích hoạt tài khoản thành công, xóa sạch dấu vết OTP
             user.IsConfirmed = true;
             user.OtpCode = null;
             user.OtpExpired = null;
@@ -153,26 +165,23 @@ namespace Wedding_House.Controllers
         }
 
         // ==========================================
-        // 4. API ĐĂNG NHẬP (CÓ CHECK XÁC THỰC EMAIL)
+        // 4. API ĐĂNG NHẬP
         // ==========================================
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
-            var taiKhoan = await _context.Taikhoans
-                .FirstOrDefaultAsync(u => u.TenDangNhap == model.Username);
+            var taiKhoan = await _context.Taikhoans.FirstOrDefaultAsync(u => u.TenDangNhap == model.Username);
 
             if (taiKhoan == null || !BCrypt.Net.BCrypt.Verify(model.Password, taiKhoan.MatKhau))
             {
                 return Unauthorized(new { message = "Tài khoản hoặc mật khẩu không chính xác!" });
             }
 
-            // CHẶN KHÔNG CHO LOGIN NẾU CHƯA XÁC THỰC EMAIL (ISCONFIRMED == FALSE HOẶC 0)
             if (taiKhoan.IsConfirmed == false)
             {
                 return BadRequest(new { message = "Tài khoản của bạn chưa được xác thực bằng mã OTP trên Gmail!" });
             }
 
-            // --- Giữ nguyên đoạn tạo Token JWT bên dưới của bạn ---
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"] ?? string.Empty);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -190,6 +199,83 @@ namespace Wedding_House.Controllers
             var tokenString = tokenHandler.WriteToken(token);
 
             return Ok(new { Token = tokenString, Username = taiKhoan.TenDangNhap, Role = taiKhoan.VaiTro });
+        }
+
+        // ==========================================
+        // 5. API KIỂM TRA EMAIL VÀ GỬI MÃ OTP QUÊN MẬT KHẨU
+        // ==========================================
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            try
+            {
+                var khachHang = await _context.Khachhangs.FirstOrDefaultAsync(k => k.Email == request.Email);
+                if (khachHang == null)
+                {
+                    return BadRequest(new { message = "Gmail đăng ký không hợp lệ hoặc chưa tồn tại!" });
+                }
+
+                var taiKhoan = await _context.Taikhoans.FirstOrDefaultAsync(t => t.MaTaiKhoan == khachHang.MaTaiKhoan);
+                if (taiKhoan == null)
+                {
+                    return BadRequest(new { message = "Lỗi hệ thống: Không tìm thấy tài khoản liên kết với khách hàng này!" });
+                }
+
+                string otpCode = new Random().Next(100000, 999999).ToString();
+
+                taiKhoan.OtpCode = otpCode;
+                await _context.SaveChangesAsync();
+
+                // Gọi hàm gửi email khôi phục mật khẩu
+                SendEmailResetPassword(khachHang.Email, otpCode);
+
+                return Ok(new { message = "Mã xác nhận đã được gửi đến email của bạn!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
+        // ==========================================
+        // 6. API XÁC NHẬN OTP VÀ ĐỔI MẬT KHẨU
+        // ==========================================
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            try
+            {
+                var khachHang = await _context.Khachhangs.FirstOrDefaultAsync(k => k.Email == request.Email);
+                if (khachHang == null) return BadRequest(new { message = "Email không hợp lệ!" });
+
+                var taiKhoan = await _context.Taikhoans.FirstOrDefaultAsync(t => t.MaTaiKhoan == khachHang.MaTaiKhoan);
+                if (taiKhoan == null) return BadRequest(new { message = "Không tìm thấy tài khoản!" });
+
+                if (taiKhoan.OtpCode == null || taiKhoan.OtpCode != request.Otp)
+                {
+                    return BadRequest(new { message = "Mã xác nhận không chính xác!" });
+                }
+
+                taiKhoan.MatKhau = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                taiKhoan.OtpCode = null; // Xóa OTP đi để không bị dùng lại
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Đổi mật khẩu thành công! Vui lòng đăng nhập lại." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi hệ thống: " + ex.Message });
+            }
+        }
+
+        // --- CÁC CLASS DTO HỨNG DỮ LIỆU ---
+        public class ForgotPasswordRequest { public string Email { get; set; } }
+        public class ResetPasswordRequest
+        {
+            public string Email { get; set; }
+            public string Otp { get; set; }
+            public string NewPassword { get; set; }
         }
     }
 

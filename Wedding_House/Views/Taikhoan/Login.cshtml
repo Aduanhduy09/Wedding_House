@@ -293,65 +293,6 @@
                     transform: translateY(0);
                 }
 
-            /* divider */
-            .divider {
-                display: flex;
-                align-items: center;
-                gap: .75rem;
-                color: var(--text-muted);
-                font-size: .78rem;
-                margin: 1.4rem 0;
-            }
-
-                .divider::before, .divider::after {
-                    content: '';
-                    flex: 1;
-                    height: 1px;
-                    background: var(--border);
-                }
-
-            /* social row */
-            .social-row {
-                display: flex;
-                gap: .75rem;
-            }
-
-            .btn-social {
-                flex: 1;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: .5rem;
-                border: 1.5px solid var(--border);
-                border-radius: 10px;
-                background: #fff;
-                color: var(--text-main);
-                font-size: .82rem;
-                font-weight: 500;
-                padding: .55rem;
-                cursor: pointer;
-                transition: background .18s, border-color .18s;
-                text-decoration: none;
-            }
-
-                .btn-social:hover {
-                    background: #f8fafc;
-                    border-color: #c8d3e0;
-                    color: var(--text-main);
-                }
-
-                .btn-social i {
-                    font-size: 1.05rem;
-                }
-
-            .google-icon {
-                color: #ea4335;
-            }
-
-            .fb-icon {
-                color: #1877f2;
-            }
-
             /* bottom switch */
             .switch-text {
                 text-align: center;
@@ -442,24 +383,13 @@
                             <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe" value="true" />
                             <label class="form-check-label" for="rememberMe">Ghi nhớ đăng nhập</label>
                         </div>
-                        <a href="#" class="forgot-link">Quên mật khẩu?</a>
+                        <a href="/Taikhoan/QuenMatKhau" class="forgot-link">Quên mật khẩu?</a>
                     </div>
 
                     <button type="submit" class="btn-primary-custom">
                         <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập
                     </button>
                 </form>
-
-                <div class="divider">hoặc tiếp tục với</div>
-
-                <div class="social-row">
-                    <a href="#" class="btn-social">
-                        <i class="bi bi-google google-icon"></i> Google
-                    </a>
-                    <a href="#" class="btn-social">
-                        <i class="bi bi-facebook fb-icon"></i> Facebook
-                    </a>
-                </div>
 
                 <p class="switch-text">
                     Chưa có tài khoản?
@@ -552,6 +482,7 @@
         bootstrap.Tab.getOrCreateInstance(tab).show();
         return false;
         }
+
         // ==========================================
         // XỬ LÝ ĐĂNG NHẬP (BẮN API JSON)
         // ==========================================
@@ -571,7 +502,7 @@
         const data = await response.json();
 
         if (response.ok) {
-        // ĐÃ BỔ SUNG: Trích xuất trọn vẹn dữ liệu từ API
+        // Trích xuất trọn vẹn dữ liệu từ API
         const token = data.token || data.Token;
         const user  = data.username || data.Username;
         const role  = data.role || data.Role;
@@ -582,7 +513,6 @@
         localStorage.setItem('role', role);
 
         alert('Đăng nhập thành công với quyền: ' + role);
-
         // PHÂN LUỒNG ĐIỀU HƯỚNG THEO VAI TRÒ
         const cleanRole = role.toLowerCase().trim();
         if (cleanRole === "admin" || cleanRole === "nhanvien") {

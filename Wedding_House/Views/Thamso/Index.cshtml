@@ -1,32 +1,191 @@
-﻿@model IEnumerable<Wedding_House.Models.Thamso>
+﻿@{
+    ViewData["Title"] = "Cấu Hình Tham Số Hệ Thống";
+}
 
-<table class="table table-bordered table-striped mt-3">
-    <thead class="table-dark">
-        <tr>
-            <th>Mã TS</th>
-            <th>Loại Ca</th>
-            <th>Đơn Giá Bàn Tối Thiểu</th>
-            <th>Số Lượng Bàn Tối Đa</th>
-            <th>Số Lượng Món Ăn</th>
-            <th>Số Lượng Dịch Vụ</th>
-            <th class="text-center">Thao tác</th>
-        </tr>
-    </thead>
+<style>
+    :root {
+        --navy: #0E1B2E;
+        --gold: #c9963c;
+        --border: #e2e8f0;
+        --radius: 12px;
+    }
 
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Id</td>
-                <td>@item.LoaiCa</td>
-                <td>@item.DonGiaBanToiThieu</td>
-                <td>@item.SoLuongBanToiDa</td>
-                <td>@item.SoLuongMonAn</td>
-                <td>@item.SoLuongDichVu</td>
-                <td class="text-center">
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
-                </td>
-            </tr>
+    .param-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        transition: all 0.2s;
+        overflow: hidden;
+    }
+
+        .param-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(15,23,42,0.06);
         }
-    </tbody>
-</table></td> </tr> </table>
+
+    .card-type-header {
+        background: var(--navy);
+        color: #ffffff;
+        padding: 0.75rem 1.2rem;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        border-bottom: 2px solid var(--gold);
+    }
+</style>
+
+<div class="container-fluid py-3">
+    <div class="mb-4">
+        <h1 class="fw-bold text-navy" style="font-family: 'Cormorant Garamond', Georgia, serif; font-size: 1.85rem;">
+            <i class="bi bi-sliders text-gold me-2"></i>Quản Lý Tham Số Hệ Thống
+        </h1>
+        <p class="text-muted small m-0">Thay đổi đơn giá bàn tối thiểu và giới hạn số lượng bàn tối đa trực tiếp trong bảng dữ liệu THAMSO của hệ thống.</p>
+    </div>
+
+    <div class="row g-4" id="paramsContainer">
+        <div class="col-12 text-center text-muted py-5">
+            <span class="spinner-border spinner-border-sm text-warning me-2"></span> Đang kết nối xác thực quyền bảo mật...
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert("Vui lòng đăng nhập tài khoản Admin hệ thống!");
+                window.location.href = '/Home/Index';
+                return;
+            }
+            loadSystemParams();
+        });
+
+        // Hàm bốc dữ liệu tham số từ bảng Thamsos lên màn hình
+        async function loadSystemParams() {
+            const container = document.getElementById('paramsContainer');
+            const token = localStorage.getItem('token');
+
+            try {
+                const res = await fetch('/api/Thamso/get-global-params', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!res.ok) throw new Error("Không thể tải tham số");
+
+                const data = await res.json();
+
+                // 🌟 BẪY TRẠNG THÁI TRỐNG: Nếu mảng SQL Server trả về rỗng [], hiển thị bảng chỉ dẫn thông minh
+                if (data.length === 0) {
+                    container.innerHTML = `
+                        <div class="col-12 text-center py-4">
+                            <div class="p-5 mx-auto bg-white border rounded-3 shadow-sm" style="max-width: 650px;">
+                                <i class="bi bi-database-fill-exclamation text-warning display-5 mb-3"></i>
+                                <h5 class="text-navy fw-bold mb-2">Bảng dữ liệu THAMSO đang trống!</h5>
+                                <p class="text-muted small mb-4">Hệ thống không tìm thấy dòng quy định nào trong SQL Server. Hãy nạp dữ liệu bằng cách chạy câu lệnh SQL sau vào dự án:</p>
+                                <div class="bg-light p-3 text-start rounded text-danger font-monospace small mb-4" style="user-select: all; overflow-x: auto; white-space: pre;">INSERT INTO THAMSO (SoLuongBanToiDa, DonGiaBanToiThieu, LoaiCa, SoLuongMonAn, SoLuongDichVu)\nVALUES (50, 3500000, 1, 5, 5), (40, 3000000, 1, 5, 5), (30, 2500000, 1, 5, 5);</div>
+                                <button class="btn btn-sm btn-navy text-white rounded-0 px-4" style="background:#0E1B2E;" onclick="loadSystemParams()"><i class="bi bi-arrow-clockwise me-1"></i> Tải lại dữ liệu</button>
+                            </div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = '';
+
+                data.forEach((ts, index) => {
+                    // Định hình tên nhãn phân loại theo từng dòng quy định của bảng THAMSO
+                    let labelName = ts.loaiSanh || `Quy định bộ lọc #${index + 1}`;
+                    if(index === 0) labelName = "Sảnh Loại A";
+                    if(index === 1) labelName = "Sảnh Loại B";
+                    if(index === 2) labelName = "Sảnh Loại C";
+                    if(index === 3) labelName = "Sảnh Loại D";
+                    if(index === 4) labelName = "Sảnh Loại E";
+
+                    container.innerHTML += `
+                        <div class="col-md-6 col-xl-4">
+                            <div class="param-card shadow-sm">
+                                <div class="card-type-header d-flex justify-content-between align-items-center">
+                                    <span><i class="bi bi-gear-fill text-warning me-2"></i>Cấu hình hệ thống</span>
+                                    <span class="badge bg-warning text-dark rounded-pill">${labelName}</span>
+                                </div>
+                                <div class="p-4 bg-white">
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-uppercase text-muted" style="font-size:0.7rem; letter-spacing:0.5px;">Số lượng bàn tối đa</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light"><i class="bi bi-grid-3x3-gap text-muted"></i></span>
+                                            <input type="number" class="form-control shadow-none fw-bold" id="max_tables_${ts.id}" value="${ts.soLuongBanToiDa}" min="1">
+                                            <span class="input-group-text bg-light">Bàn</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <label class="form-label small fw-bold text-uppercase text-muted" style="font-size:0.7rem; letter-spacing:0.5px;">Đơn giá bàn tối thiểu</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light"><i class="bi bi-cash text-muted"></i></span>
+                                            <input type="number" class="form-control shadow-none fw-bold text-danger" id="min_price_${ts.id}" value="${ts.donGiaBanToiThieu}" step = "100000">
+                                            <span class="input-group-text bg-light">đ / bàn</span>
+                                        </div>
+                                    </div>
+
+                                    <button class="btn btn-sm text-white w-100 rounded-0 py-2 font-weight-500 tracking-wide"
+                                            style="background-color: var(--navy);"
+                                            onclick="saveParam(${ts.id})">
+                                        <i class="bi bi-cloud-arrow-up me-1"></i> Lưu quy định tham số
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<div class="col-12 text-center text-danger py-4"><i class="bi bi-wifi-off me-2"></i>Lỗi kết nối API lấy dữ liệu từ bảng THAMSO.</div>';
+            }
+        }
+
+        // Hàm kích hoạt gửi dữ liệu cập nhật tham số xuống SQL Server
+        async function saveParam(id) {
+            const token = localStorage.getItem('token');
+            const maxTables = parseInt(document.getElementById(`max_tables_${id}`).value);
+            const minPrice = parseFloat(document.getElementById(`min_price_${id}`).value);
+
+            if (isNaN(maxTables) || maxTables <= 0 || isNaN(minPrice) || minPrice <= 0) {
+                alert("Vui lòng điền giá trị tham số hợp lệ lớn hơn 0!");
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/Thamso/update-global-param', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        soLuongBanToiDa: maxTables,
+                        donGiaBanToiThieu: minPrice
+                    })
+                });
+
+                const result = await res.json();
+                if (res.ok) {
+                    alert(result.message);
+                    loadSystemParams();
+                } else {
+                    alert(result.message || "Gặp lỗi khi lưu tham số.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Không thể kết nối máy chủ để thực thi lưu tham số.");
+            }
+        }
+    </script>
+}

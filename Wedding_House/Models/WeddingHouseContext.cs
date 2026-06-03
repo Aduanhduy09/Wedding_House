@@ -288,7 +288,7 @@ public partial class WeddingHouseContext : DbContext
             entity.ToTable("THAMSO");
 
             entity.Property(e => e.DonGiaBanToiThieu).HasColumnType("decimal(18, 2)");
-            entity.Property(e => e.LoaiCa).HasMaxLength(50);
+            entity.Property(e => e.LoaiSanh).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Tieccuoi>(entity =>

@@ -91,6 +91,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/Duy/source/repos/Wedding_House/Wedding_House/Views/Home/QuanLySanhTiec.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxRdWFuTHlTYW5oVGllYy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Duy/source/repos/Wedding_House/Wedding_House/Views/Home/SanhTiec.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxTYW5oVGllYy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -153,6 +157,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/Duy/source/repos/Wedding_House/Wedding_House/Views/Taikhoan/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFpa2hvYW5cTG9naW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Duy/source/repos/Wedding_House/Wedding_House/Views/Taikhoan/QuenMatKhau.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFpa2hvYW5cUXVlbk1hdEtoYXUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Duy/source/repos/Wedding_House/Wedding_House/Views/Taikhoan/Xacthucgmail.cshtml]

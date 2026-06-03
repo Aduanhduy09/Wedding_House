@@ -19,10 +19,16 @@ namespace Wedding_House.Controllers
             _context = context;
         }
 
+        // =======================================================
+        // 📋 PHẦN 1: CÁC ACTION MVC TRUYỀN THỐNG (GIỮ NGUYÊN CỦA BẠN)
+        // =======================================================
+
         // GET: Dichvu
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Dichvus.ToListAsync());
+            // 🌟 ĐÃ SỬA TẠI ĐÂY: Thay đổi từ OrderBy(TenDichVu) sang OrderBy(d => d.MaDichVu)
+            // Lệnh này giúp sắp xếp danh mục tăng dần từ #SRV-1, #SRV-2, #SRV-3... trở lên
+            return View(await _context.Dichvus.OrderBy(d => d.MaDichVu).ToListAsync());
         }
 
         // GET: Dichvu/Details/5
@@ -51,8 +57,6 @@ namespace Wedding_House.Controllers
         }
 
         // POST: Dichvu/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("MaDichVu,TenDichVu")] Dichvu dichvu)
@@ -84,8 +88,6 @@ namespace Wedding_House.Controllers
         }
 
         // POST: Dichvu/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("MaDichVu,TenDichVu")] Dichvu dichvu)
@@ -152,9 +154,65 @@ namespace Wedding_House.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        // =======================================================
+        // 🌟 PHẦN 2: CÁC API PHỤC VỤ THAO TÁC MODAL VÀ AJAX ĐỘNG
+        // =======================================================
+
+        // API: Cập nhật đổi tên dịch vụ từ khung Modal và ghi trực tiếp xuống Database
+        [HttpPost("/api/Dichvu/update")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateService([FromBody] DichvuUpdateDto model)
+        {
+            try
+            {
+                var dichVu = await _context.Dichvus.FirstOrDefaultAsync(d => d.MaDichVu == model.MaDichVu);
+                if (dichVu == null)
+                    return NotFound(new { message = "Không tìm thấy dịch vụ này trên hệ thống!" });
+
+                dichVu.TenDichVu = model.TenDichVu;
+
+                await _context.SaveChangesAsync();
+                return Ok(new { message = "Cập nhật tên dịch vụ mới lên hệ thống thành công!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Lỗi hệ thống khi cập nhật dịch vụ: " + ex.Message });
+            }
+        }
+
+        // API: Xóa thẳng dịch vụ ra khỏi cơ sở dữ liệu khi nhận lệnh từ nút xác nhận
+        [HttpDelete("/api/Dichvu/delete/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> DeleteService(int id)
+        {
+            try
+            {
+                var dichVu = await _context.Dichvus.FirstOrDefaultAsync(d => d.MaDichVu == id);
+                if (dichVu == null)
+                    return NotFound(new { message = "Dịch vụ không tồn tại hoặc đã bị xóa trước đó!" });
+
+                _context.Dichvus.Remove(dichVu);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Đã xóa dịch vụ ra khỏi cơ sở dữ liệu hệ thống thành công!" });
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new { message = "Không thể xóa! Dịch vụ này hiện đang nằm trong danh sách sử dụng tiệc cưới của khách hàng." });
+            }
+        }
+
+
         private bool DichvuExists(int id)
         {
             return _context.Dichvus.Any(e => e.MaDichVu == id);
         }
+    }
+
+    public class DichvuUpdateDto
+    {
+        public int MaDichVu { get; set; }
+        public string TenDichVu { get; set; }
     }
 }

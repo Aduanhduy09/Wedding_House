@@ -1,12 +1,9 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Bảng Điều Khiển Quản Trị";
 }
 
-<!-- ── 1. TOÀN BỘ CSS TÙY BIẾN CAO CẤP (BÓC TỪ DASHBOARD.TXT) ── -->
 <style>
     :root {
-        /* Đồng bộ các biến màu sắc cốt lõi của không gian Dashboard */
         --gold: #c9963c;
         --gold-light: rgba(201,150,60,.10);
         --success: #16a34a;
@@ -20,7 +17,6 @@
         --radius: 14px;
     }
 
-    /* Page header */
     .page-header .greeting {
         font-family: 'Cormorant Garamond', Georgia, serif;
         font-size: 1.85rem;
@@ -48,7 +44,6 @@
         font-weight: 500;
     }
 
-    /* Metric Cards */
     .metric-card {
         background: #ffffff;
         border: 1px solid var(--border);
@@ -118,27 +113,6 @@
         margin: 0 0 .5rem;
     }
 
-    .metric-delta {
-        font-size: .78rem;
-        font-weight: 500;
-        display: inline-flex;
-        align-items: center;
-        gap: .2rem;
-        padding: .18rem .55rem;
-        border-radius: 20px;
-    }
-
-    .delta-up {
-        background: var(--success-light);
-        color: var(--success);
-    }
-
-    .delta-down {
-        background: var(--danger-light);
-        color: var(--danger);
-    }
-
-    /* Section card */
     .section-card {
         background: #ffffff;
         border: 1px solid var(--border);
@@ -163,11 +137,6 @@
         gap: .45rem;
     }
 
-        .section-title i {
-            color: var(--accent);
-        }
-
-    /* Table */
     .wh-table {
         margin: 0;
     }
@@ -190,10 +159,6 @@
             border-bottom: 1px solid #f1f5f9;
         }
 
-        .wh-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-
         .wh-table tbody tr:hover td {
             background: #f8faff;
         }
@@ -202,8 +167,8 @@
         width: 32px;
         height: 32px;
         border-radius: 8px;
-        background: rgba(37,99,235,.10);
-        color: var(--accent);
+        background: rgba(217,119,6,.10);
+        color: var(--warning);
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -216,120 +181,6 @@
         font-weight: 500;
     }
 
-    /* Status badges */
-    .badge-status {
-        font-size: .72rem;
-        font-weight: 600;
-        padding: .3rem .7rem;
-        border-radius: 20px;
-        letter-spacing: .3px;
-    }
-
-    .badge-paid {
-        background: var(--success-light);
-        color: var(--success);
-    }
-
-    .badge-pending {
-        background: var(--warning-light);
-        color: var(--warning);
-    }
-
-    .badge-cancelled {
-        background: var(--danger-light);
-        color: var(--danger);
-    }
-
-    .btn-icon {
-        width: 30px;
-        height: 30px;
-        border-radius: 7px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: .8rem;
-        border: 1px solid var(--border);
-        background: #fff;
-        color: var(--text-muted);
-        cursor: pointer;
-        transition: all .15s;
-        text-decoration: none;
-    }
-
-        .btn-icon:hover {
-            color: var(--accent);
-            border-color: var(--accent);
-            background: rgba(37,99,235,.10);
-        }
-
-    /* Checklist */
-    .task-body {
-        padding: 1rem 1.5rem;
-    }
-
-    .task-item {
-        display: flex;
-        align-items: flex-start;
-        gap: .75rem;
-        padding: .7rem 0;
-        border-bottom: 1px solid #f1f5f9;
-    }
-
-        .task-item:last-child {
-            border-bottom: none;
-        }
-
-    .task-check {
-        width: 18px;
-        height: 18px;
-        border: 2px solid var(--border);
-        border-radius: 5px;
-        cursor: pointer;
-        flex-shrink: 0;
-        margin-top: 1px;
-        transition: all .15s;
-    }
-
-    .task-label {
-        font-size: .865rem;
-    }
-
-        .task-label.done {
-            text-decoration: line-through;
-            color: var(--text-muted);
-        }
-
-    .task-meta {
-        font-size: .75rem;
-        color: var(--text-muted);
-        margin-top: .15rem;
-    }
-
-    .task-priority {
-        font-size: .68rem;
-        padding: .15rem .5rem;
-        border-radius: 20px;
-        font-weight: 600;
-        margin-left: auto;
-        flex-shrink: 0;
-    }
-
-    .tp-high {
-        background: var(--danger-light);
-        color: var(--danger);
-    }
-
-    .tp-med {
-        background: var(--warning-light);
-        color: var(--warning);
-    }
-
-    .tp-low {
-        background: var(--success-light);
-        color: var(--success);
-    }
-
-    /* Availability grid */
     .avail-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -367,163 +218,76 @@
         background: var(--danger-light);
         color: var(--danger);
     }
-
-    .slot-maint {
-        background: var(--warning-light);
-        color: var(--warning);
-    }
-
-    /* Mini chart area */
-    .mini-chart {
-        padding: .5rem 1.5rem 1rem;
-    }
-
-    .chart-bars {
-        display: flex;
-        align-items: flex-end;
-        gap: .5rem;
-        height: 80px;
-    }
-
-    .chart-bar-wrap {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: .3rem;
-        flex: 1;
-    }
-
-    .chart-bar {
-        width: 100%;
-        border-radius: 5px 5px 0 0;
-        background: rgba(37,99,235,.10);
-        transition: background .2s;
-        cursor: pointer;
-        min-height: 4px;
-    }
-
-        .chart-bar:hover, .chart-bar.active {
-            background: var(--accent);
-        }
-
-    .chart-bar-label {
-        font-size: .68rem;
-        color: var(--text-muted);
-    }
-
-    .link-subtle {
-        font-size: .8rem;
-        color: var(--accent);
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-        .link-subtle:hover {
-            text-decoration: underline;
-        }
 </style>
 
-<!-- ── 2. KHU VỰC THẺ HTML NỘI DUNG CHÍNH (BÓC TỪ BODY DASHBOARD.TXT) ── -->
 <div class="container-fluid py-2">
 
-    <!-- Page header -->
     <div class="page-header d-flex align-items-start justify-content-between flex-wrap gap-2 mb-4">
         <div>
             <h1 class="greeting">Chào buổi sáng, Admin 👋</h1>
-            <p class="sub">Hôm nay có <strong>3 tiệc cưới</strong> đang diễn ra. Chúc một ngày làm việc suôn sẻ.</p>
+            <p class="sub">Hệ thống ghi nhận dữ liệu quản trị trực tuyến từ SQL Server.</p>
         </div>
-        <span class="date-badge">
-            <i class="bi bi-calendar3"></i>
-            Thứ Ba, 02 tháng 6, 2026
+        <span class="date-badge" id="lblLiveDate">
+            <i class="bi bi-calendar3"></i> Đang tải ngày tháng...
         </span>
     </div>
 
-    <!-- Metric cards -->
     <div class="row g-4 mb-4">
-        <div class="col-6 col-xl-3">
+        <div class="col-12 col-xl-4">
             <div class="metric-card mc-blue">
                 <div class="metric-icon" style="background:rgba(37,99,235,.10);color:var(--accent)">
                     <i class="bi bi-cash-stack"></i>
                 </div>
                 <p class="metric-label">Doanh Thu Tháng</p>
-                <!-- 🌟 ĐÃ GẮN ID: Số liệu thật từ DB sẽ đổ vào đây -->
                 <div class="metric-value" style="color:var(--accent)" id="txtRevenue">Đang tính...</div>
-                <span class="metric-delta delta-up"><i class="bi bi-arrow-up-short"></i>+12.4%</span>
             </div>
         </div>
-        <div class="col-6 col-xl-3">
+        <div class="col-6 col-xl-4">
             <div class="metric-card mc-gold">
                 <div class="metric-icon" style="background:var(--gold-light);color:var(--gold)">
                     <i class="bi bi-heart"></i>
                 </div>
                 <p class="metric-label">Tiệc Sắp Tới</p>
-                <div class="metric-value" style="color:var(--gold)">18</div>
-                <span class="metric-delta delta-up"><i class="bi bi-arrow-up-short"></i>+3 tuần này</span>
+                <div class="metric-value" style="color:var(--gold)" id="txtUpcomingEvents">Đang đếm...</div>
             </div>
         </div>
-        <div class="col-6 col-xl-3">
-            <div class="metric-card mc-green">
-                <div class="metric-icon" style="background:var(--success-light);color:var(--success)">
-                    <i class="bi bi-building"></i>
-                </div>
-                <p class="metric-label">Tỷ Lệ Lấp Đầy</p>
-                <div class="metric-value" style="color:var(--success)">87%</div>
-                <span class="metric-delta delta-up"><i class="bi bi-arrow-up-short"></i>+5% so tháng trước</span>
-            </div>
-        </div>
-        <div class="col-6 col-xl-3">
+        <div class="col-6 col-xl-4">
             <div class="metric-card mc-purple">
                 <div class="metric-icon" style="background:var(--purple-light);color:var(--purple)">
                     <i class="bi bi-people"></i>
                 </div>
-                <p class="metric-label">Tổng Tài Khoản</p>
-                <!-- 🌟 ĐÃ GẮN ID: Đếm tổng số dòng Taikhoan thật từ DB -->
-                <div class="metric-value" style="color:var(--purple)" id="txtDishesCount">0</div>
-                <span class="metric-delta delta-down"><i class="bi bi-arrow-down-short"></i>Trực tuyến</span>
+                <p class="metric-label">Tổng Tài Khoản Hệ Thống</p>
+                <div class="metric-value" style="color:var(--purple)" id="txtTotalAccounts">Đang đếm...</div>
             </div>
         </div>
     </div>
 
-    <!-- Main split layout -->
     <div class="row g-4">
-
-        <!-- LEFT: Recent bookings table (65%) -->
         <div class="col-lg-8">
             <div class="section-card h-100">
                 <div class="section-header">
-                    <h2 class="section-title"><i class="bi bi-table"></i> Tài Khoản Hệ Thống Mới Kích Hoạt</h2>
-                    <a href="#" class="link-subtle">Xem tất cả <i class="bi bi-arrow-right"></i></a>
-                </div>
-
-                <!-- mini revenue bars -->
-                <div class="mini-chart">
-                    <p style="font-size:.72rem;color:var(--text-muted);margin:0 0 .5rem;font-weight:600;text-transform:uppercase;letter-spacing:.4px">Doanh thu 7 ngày</p>
-                    <div class="chart-bars">
-                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:45%"></div><span class="chart-bar-label">T2</span></div>
-                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:70%"></div><span class="chart-bar-label">T3</span></div>
-                        <div class="chart-bar-wrap"><div class="chart-bar active" style="height:90%"></div><span class="chart-bar-label">T4</span></div>
-                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:55%"></div><span class="chart-bar-label">T5</span></div>
-                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:80%"></div><span class="chart-bar-label">T6</span></div>
-                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:100%"></div><span class="chart-bar-label">T7</span></div>
-                        <div class="chart-bar-wrap"><div class="chart-bar" style="height:65%"></div><span class="chart-bar-label">CN</span></div>
-                    </div>
+                    <h2 class="section-title text-navy"><i class="bi bi-shield-check text-warning"></i> Đơn Đặt Tiệc Chờ Duyệt Cọc</h2>
+                    <span class="badge bg-warning text-dark px-2 py-1 rounded-pill" style="font-size:0.75rem;" id="txtPendingCount">0 đơn chờ duyệt</span>
                 </div>
 
                 <div class="table-responsive">
                     <table class="table wh-table">
                         <thead>
                             <tr>
-                                <th>Tên Đăng Nhập</th>
-                                <th>Phân Quyền</th>
-                                <th>Thời Gian Quét</th>
-                                <th>Trạng Thái</th>
-                                <th>Thao Tác</th>
+                                <th>Mã Đơn</th>
+                                <th>Khách Hàng</th>
+                                <th>Cô Dâu - Chú Rể</th>
+                                <th>Sảnh / Ca</th>
+                                <th>Ngày Đãi</th>
+                                <th>Cọc Cần Thu</th>
+                                <th class="text-center">Thao Tác</th>
                             </tr>
                         </thead>
-                        <!-- 🌟 ĐÃ GẮN ID TẦNG THÂN: Dữ liệu thật SQL đổ ở đây -->
-                        <tbody id="recentBookingsBody">
+                        <tbody id="adminPendingTableBody">
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">Đang tải dữ liệu trực tiếp từ SQL Server...</td>
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <span class="spinner-border spinner-border-sm text-warning me-2"></span> Đang kết nối bốc dữ liệu từ SQL Server...
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -531,100 +295,116 @@
             </div>
         </div>
 
-        <!-- RIGHT: Tasks + Availability (35%) -->
         <div class="col-lg-4 d-flex flex-column gap-4">
-
-            <!-- Today tasks -->
             <div class="section-card">
                 <div class="section-header">
-                    <h2 class="section-title"><i class="bi bi-check2-square"></i> Việc Cần Làm Hôm Nay</h2>
-                    <span style="font-size:.75rem;color:var(--text-muted)">3/5 hoàn thành</span>
+                    <h2 class="section-title"><i class="bi bi-grid-3x3-gap text-primary"></i> Trạng Thái Sảnh Hôm Nay</h2>
                 </div>
-                <div class="task-body">
-                    <div class="task-item">
-                        <input type="checkbox" class="task-check" checked />
-                        <div class="flex-grow-1">
-                            <div class="task-label done">Kiểm tra kết nối gửi OTP tự động của Google SMTP</div>
-                            <div class="task-meta"><i class="bi bi-clock me-1"></i>08:00</div>
-                        </div>
-                        <span class="task-priority tp-high">Cao</span>
-                    </div>
-                    <div class="task-item">
-                        <input type="checkbox" class="task-check" checked />
-                        <div class="flex-grow-1">
-                            <div class="task-label done">Mở rộng độ dài cột MatKhau trong DB lên VARCHAR(500)</div>
-                            <div class="task-meta"><i class="bi bi-clock me-1"></i>09:30</div>
-                        </div>
-                        <span class="task-priority tp-high">Cao</span>
-                    </div>
-                    <div class="task-item">
-                        <input type="checkbox" class="task-check" checked />
-                        <div class="flex-grow-1">
-                            <div class="task-label done">Cấu hình rào chắn bảo mật Token JWT tại ô Layout</div>
-                            <div class="task-meta"><i class="bi bi-clock me-1"></i>10:00</div>
-                        </div>
-                        <span class="task-priority tp-high">Cao</span>
-                    </div>
-                    <div class="task-item">
-                        <input type="checkbox" class="task-check" />
-                        <div class="flex-grow-1">
-                            <div class="task-label">Tích hợp giao diện Landing Page cho Khách hàng</div>
-                            <div class="task-meta"><i class="bi bi-clock me-1"></i>14:00</div>
-                        </div>
-                        <span class="task-priority tp-med">Vừa</span>
-                    </div>
-                    <div class="task-item">
-                        <input type="checkbox" class="task-check" />
-                        <div class="flex-grow-1">
-                            <div class="task-label">Kiểm tra tiến độ chuẩn bị báo cáo đồ án</div>
-                            <div class="task-meta"><i class="bi bi-clock me-1"></i>15:30</div>
-                        </div>
-                        <span class="task-priority tp-low">Thấp</span>
-                    </div>
+                <div class="avail-grid" id="adminBallroomsContainer">
+                    <div class="text-center text-muted col-span-2 py-3 small">Đang quét trạng thái sảnh...</div>
                 </div>
             </div>
-
-            <!-- Ballroom availability -->
-            <div class="section-card">
-                <div class="section-header">
-                    <h2 class="section-title"><i class="bi bi-grid-3x3-gap"></i> Trạng Thái Sảnh Hôm Nay</h2>
-                </div>
-                <div class="avail-grid">
-                    <div class="avail-slot slot-busy">
-                        <div class="slot-name"><span class="slot-dot" style="background:var(--danger)"></span>Sảnh Diamond</div>
-                        <div>Đang có tiệc</div>
-                        <div style="font-size:.72rem;margin-top:.2rem;opacity:.8">Tiệc Lan Anh · 300 khách</div>
-                    </div>
-                    <div class="avail-slot slot-available">
-                        <div class="slot-name"><span class="slot-dot" style="background:var(--success)"></span>Sảnh Ruby</div>
-                        <div>Trống</div>
-                        <div style="font-size:.72rem;margin-top:.2rem;opacity:.8">Sẵn sàng đặt tiệc</div>
-                    </div>
-                    <div class="avail-slot slot-available">
-                        <div class="slot-name"><span class="slot-dot" style="background:var(--success)"></span>Sảnh Emerald</div>
-                        <div>Trống</div>
-                        <div style="font-size:.72rem;margin-top:.2rem;opacity:.8">Sẵn sàng đặt tiệc</div>
-                    </div>
-                    <div class="avail-slot slot-maint">
-                        <div class="slot-name"><span class="slot-dot" style="background:var(--warning)"></span>Sảnh Sapphire</div>
-                        <div>Bảo trì</div>
-                        <div style="font-size:.72rem;margin-top:.2rem;opacity:.8">Hoàn thành: 20/06</div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </div>
 
-<!-- ── 3. ĐOẠN SCRIPT JAVASCRIPT ĐỌC API KÉO DỮ LIỆU THẬT ── -->
-@section Scripts {
+@section Scripts
+{
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            // Hiển thị ngày tháng thời gian thực của máy chủ
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('lblLiveDate').innerHTML = `<i class="bi bi-calendar3"></i> ${new Date().toLocaleDateString('vi-VN', options)}`;
+
+            // Kích hoạt bốc dữ liệu đồng loạt
+            loadMonthlyRevenue();
+            loadUpcomingEvents();
+            loadTotalAccounts(); // 🌟 GỌI HÀM BỐC TỔNG SỐ TÀI KHOẢN TẠI ĐÂY
+            loadDashboardStats();
+            loadPendingDeposits();
+        });
+
+        // TÍNH DOANH THU THÁNG
+        async function loadMonthlyRevenue() {
+            const txtRevenue = document.getElementById('txtRevenue');
             const token = localStorage.getItem('token');
+            if (!token) return;
 
             try {
-                // Bắn lệnh fetch ngầm sang API thống kê DashboardApiController
+                const res = await fetch('/api/Admin/monthly-revenue', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    txtRevenue.textContent = data.revenue.toLocaleString('vi-VN') + ' đ';
+                } else {
+                    txtRevenue.textContent = '0 đ';
+                }
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu doanh thu tháng:", err);
+                txtRevenue.textContent = 'Lỗi tải';
+            }
+        }
+
+        // TẢI SỐ LƯỢNG TIỆC SẮP TỚI
+        async function loadUpcomingEvents() {
+            const txtUpcoming = document.getElementById('txtUpcomingEvents');
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const res = await fetch('/api/Admin/upcoming-events', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    txtUpcoming.textContent = data.count;
+                } else {
+                    txtUpcoming.textContent = '0';
+                }
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu tiệc sắp tới:", err);
+                txtUpcoming.textContent = 'Lỗi';
+            }
+        }
+
+        // 🌟 TẢI TỔNG TÀI KHOẢN HỆ THỐNG
+        async function loadTotalAccounts() {
+            const txtAccounts = document.getElementById('txtTotalAccounts');
+            const token = localStorage.getItem('token');
+            if (!token) return;
+
+            try {
+                const res = await fetch('/api/Admin/total-accounts', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    txtAccounts.textContent = data.count;
+                } else {
+                    txtAccounts.textContent = '0';
+                }
+            } catch (err) {
+                console.error("Lỗi khi tải dữ liệu tài khoản:", err);
+                txtAccounts.textContent = 'Lỗi';
+            }
+        }
+
+        // TẢI CHỈ SỐ TRẠNG THÁI SẢNH ĐỘNG
+        async function loadDashboardStats() {
+            const token = localStorage.getItem('token');
+            try {
                 const response = await fetch('/api/dashboardapi/stats', {
                     method: 'GET',
                     headers: {
@@ -636,48 +416,118 @@
                 if (response.ok) {
                     const data = await response.json();
 
-                    // 1. Gắn số liệu đếm thật vào card
-                    document.getElementById('txtRevenue').textContent = data.revenue;
-                    document.getElementById('txtDishesCount').textContent = data.dishesCount;
+                    const ballroomContainer = document.getElementById('adminBallroomsContainer');
+                    ballroomContainer.innerHTML = '';
 
-                    // 2. Bóc mảng tài khoản SQL render thành các dòng tr
-                    const tableBody = document.getElementById('recentBookingsBody');
-                    tableBody.innerHTML = '';
+                    data.ballrooms.forEach(sanh => {
+                        let slotClass = 'slot-available';
+                        let dotColor = 'var(--success)';
+                        let statusText = 'Trống';
 
-                    data.recentData.forEach(item => {
-                        const row = `
-                            <tr>
-                                <td>
-                                    <span class="customer-avatar">${item.username.substring(0, 2).toUpperCase()}</span>
-                                    <span class="customer-name">${item.username}</span>
-                                </td>
-                                <td><i class="bi bi-shield-lock text-primary me-1" style="font-size:.8rem"></i>${item.role}</td>
-                                <td>Vừa quét xong</td>
-                                <td><span class="badge-status badge-paid"><i class="bi bi-check-circle me-1"></i>${item.status}</span></td>
-                                <td class="d-flex gap-1">
-                                    <button class="btn-icon" onclick="alert('Xem tài khoản hệ thống: ${item.username}')"><i class="bi bi-eye"></i></button>
-                                </td>
-                            </tr>
+                        if (sanh.status === 'busy') {
+                            slotClass = 'slot-busy';
+                            dotColor = 'var(--danger)';
+                            statusText = 'Đang có tiệc';
+                        }
+
+                        ballroomContainer.innerHTML += `
+                            <div class="avail-slot ${slotClass}">
+                                <div class="slot-name">
+                                    <span class="slot-dot" style="background:${dotColor}"></span>${sanh.tenSanh}
+                                </div>
+                                <div>${statusText}</div>
+                                <div style="font-size:.72rem;margin-top:.2rem;opacity:.8">${sanh.note}</div>
+                            </div>
                         `;
-                        tableBody.innerHTML += row;
                     });
-
-                } else {
-                    console.error('Lỗi phản hồi từ API thống kê!');
                 }
             } catch (error) {
-                console.error('Không thể kết nối đến API Dashboard:', error);
+                console.error('Không thể đồng bộ hóa dữ liệu sảnh:', error);
             }
-        });
+        }
 
-        /* Hiệu ứng gạch ngang của checkbox việc cần làm */
-        document.querySelectorAll('.task-check').forEach(cb => {
-            cb.addEventListener('change', () => {
-                const label = cb.closest('.task-item').querySelector('.task-label');
-                label.classList.toggle('done', cb.checked);
-            });
-        });
+        // TẢI BẢNG DUYỆT CỌC
+        async function loadPendingDeposits() {
+            const tbody = document.getElementById('adminPendingTableBody');
+            const countBadge = document.getElementById('txtPendingCount');
+
+            try {
+                const res = await fetch('/api/Booking/admin/pending-deposits');
+                if (!res.ok) throw new Error("Không thể tải đơn hàng chờ duyệt");
+
+                const data = await res.json();
+                countBadge.innerText = `${data.length} đơn chờ duyệt`;
+
+                if (data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-4">🎉 Tuyệt vời! Không có đơn đặt tiệc nào đang chờ duyệt cọc.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.forEach(item => {
+                    const ngayLapDon = new Date(item.ngayLap);
+                    const ngayHienTai = new Date();
+                    const diffTime = ngayHienTai - ngayLapDon;
+                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                    let soNgayTre = diffDays > 1 ? diffDays - 1 : 0;
+                    let tienPhat = soNgayTre * (item.tongTien * 0.01);
+                    let tienCocCanThu = (item.tongTien * 0.20) + tienPhat;
+
+                    let ghiChuPhat = soNgayTre > 0 ? `<br><small class="text-danger fw-normal">(Phạt trễ ${soNgayTre} ngày)</small>` : '';
+
+                    tbody.innerHTML += `
+                        <tr id="admin_row_${item.maDatTiecCuoi}">
+                            <td>
+                                <span class="customer-avatar">${item.tenKhachHang ? item.tenKhachHang.substring(0,2).toUpperCase() : 'KH'}</span>
+                                <span class="fw-bold text-primary">#WHD-${item.maDatTiecCuoi}</span>
+                            </td>
+                            <td><span class="customer-name">${item.tenKhachHang || 'Khách vãng lai'}</span></td>
+                            <td class="fw-semibold">${item.coDauChuRe}</td>
+                            <td><span class="badge bg-light text-dark text-uppercase small">${item.sanhCa}</span></td>
+                            <td>${item.ngayDaiTiec}</td>
+                            <td class="fw-bold text-danger">
+                                ${tienCocCanThu.toLocaleString('vi-VN')} đ
+                                ${ghiChuPhat}
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-success rounded-0 px-2" style="font-size: 0.8rem;" onclick="approveDeposit(${item.maDatTiecCuoi})">
+                                    <i class="bi bi-check-circle me-1"></i>Duyệt Cọc
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error(err);
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger py-4">Lỗi kết nối API lấy danh sách đơn chờ duyệt.</td></tr>';
+            }
+        }
+
+        // XỬ LÝ LỆNH DUYỆT CỌC
+        async function approveDeposit(maDon) {
+            const choice = confirm(`Bạn xác nhận đã kiểm tra tài khoản, khớp số dư tiền cọc cho đơn hàng #WHD-${maDon}?`);
+            if (!choice) return;
+
+            try {
+                const res = await fetch(`/api/Booking/admin/approve-deposit/${maDon}`, {
+                    method: 'POST'
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    alert(data.message);
+                    loadMonthlyRevenue();
+                    loadUpcomingEvents();
+                    loadDashboardStats();
+                    loadPendingDeposits();
+                } else {
+                    alert(data.message || "Có lỗi phát sinh trong quá trình phê duyệt.");
+                }
+            } catch (err) {
+                console.error(err);
+                alert("Không thể đồng bộ kết nối máy chủ để thực thi lệnh duyệt cọc.");
+            }
+        }
     </script>
 }
-
-```

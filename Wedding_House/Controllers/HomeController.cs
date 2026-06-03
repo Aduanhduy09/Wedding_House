@@ -6,62 +6,70 @@ namespace Wedding_House.Controllers
 {
     public class HomeController : Controller
     {
-        // 1. TRANG CHỦ CHO KHÁCH HÀNG (Đường dẫn: / hoặc /Home/Index)
+        private readonly ILogger<HomeController> _logger;
+
+        public HomeController(ILogger<HomeController> logger)
+        {
+            _logger = logger;
+        }
+
+        // =======================================================
+        // PHÂN HỆ 1: CÁC TUYẾN ĐƯỜNG DÀNH CHO KHÁCH HÀNG (CLIENT)
+        // =======================================================
+
+        // 1. Trang chủ chính thức của hệ thống (Đường dẫn: / hoặc /Home/Index)
         public IActionResult Index()
         {
             return View();
         }
 
-        // 2. TUYẾN ĐƯỜNG DỰ PHÒNG (Đường dẫn: /Home/Dashboard)
-        // Nếu lỡ có chỗ nào gọi link cũ, lệnh này sẽ ép Server tìm đúng file "AdminDashboard" của bạn
+        //  2. Trang xem danh sách thực đơn món ăn (Đường dẫn: /Home/ThucDon)
+        public IActionResult ThucDon()
+        {
+            return View(); // Gọi file Views/Home/ThucDon.cshtml
+        }
+
+        // 3. Trang đặt tiệc cưới trực tuyến (Đường dẫn: /Home/DatTiec)
+        public IActionResult DatTiec()
+        {
+            return View(); // Gọi file Views/Home/DatTiec.cshtml
+        }
+
+        // 4. Trang hiển thị biên lai đơn đặt tiệc (Đường dẫn: /Home/LichSuDatTiec)
+        public IActionResult LichSuDatTiec()
+        {
+            return View(); // Gọi file Views/Home/LichSuDatTiec.cshtml
+        }
+
+        // 5. Trang quản lý hồ sơ và lịch sử cá nhân của khách (Đường dẫn: /Home/TaiKhoan)
+        public IActionResult TaiKhoan()
+        {
+            return View(); // Gọi file Views/Home/TaiKhoan.cshtml
+        }
+
+
+        // =======================================================
+        // PHÂN HỆ 2: CÁC TUYẾN ĐƯỜNG DÀNH CHO QUẢN TRỊ VIÊN (ADMIN)
+        // =======================================================
+
+        // 📊 1. Bảng điều khiển quản trị chính thức (Đường dẫn: /Home/AdminDashboard)
+        public IActionResult AdminDashboard()
+        {
+            return View();
+        }
+
+        // 🔀 2. Tuyến đường điều hướng dự phòng cho hệ thống Admin
         public IActionResult Dashboard()
         {
             return View("AdminDashboard");
         }
 
-        // 3. TUYẾN ĐƯỜNG CHÍNH ĐỒNG BỘ (Đường dẫn: /Home/AdminDashboard)
-        // Hàm này khớp hoàn toàn với tên file AdminDashboard.cshtml bạn đã tạo
-        public IActionResult AdminDashboard()
+        // 🏢 3. 🌟 ĐÃ SỬA TẠI ĐÂY: Hứng chính xác URL từ nút bấm Sidebar truyền sang
+        [HttpGet("/SanhTiec/Index")]
+        public IActionResult QuanLySanhTiec()
         {
-            return View(); // Tự động tìm file AdminDashboard.cshtml cùng tên với hàm
-        }
-
-        // 4. TUYẾN ĐƯỜNG XEM TOÀN BỘ THỰC ĐƠN MỚI BỔ SUNG (Đường dẫn: /Home/ThucDon)
-        // Hàm này chịu trách nhiệm gọi và hiển thị file ThucDon.cshtml chứa 101 món ăn
-        public IActionResult ThucDon()
-        {
-            return View(); // Tự động tìm file ThucDon.cshtml trong thư mục Views/Home
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-        //  TUYẾN ĐƯỜNG XEM CHI TIẾT SẢNH TIỆC (Đường dẫn: /Home/SanhTiec)
-        public IActionResult SanhTiec()
-        {
-            return View(); // Sẽ gọi file Views/Home/SanhTiec.cshtml
-        }
-        // TUYẾN ĐƯỜNG ĐẶT TIỆC CƯỚI TRỰC TUYẾN (Đường dẫn: /Home/DatTiec)
-        public IActionResult DatTiec()
-        {
-            return View(); // Sẽ gọi file Views/Home/DatTiec.cshtml
-        }
-        // 🧾 TUYẾN ĐƯỜNG XEM BIÊN LAI ĐƠN ĐẶT TIỆC (Đường dẫn: /Home/BiênLai hoặc /Home/LichSuDatTiec)
-        public IActionResult LichSuDatTiec()
-        {
-            return View(); // Sẽ gọi file Views/Home/LichSuDatTiec.cshtml
-        }
-        public IActionResult TaiKhoan()
-        {
-            // Chuyển hướng đến trang TaiKhoan.cshtml
-            return View();
+            // Ép Server trả về đúng file giao diện danh sách đơn đã cọc của Admin
+            return View("QuanLySanhTiec");
         }
     }
 }

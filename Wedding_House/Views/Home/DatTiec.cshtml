@@ -83,7 +83,10 @@
 
     <header class="wizard-header">
         <div class="container">
-            <h1 style="font-family: var(--font-display); font-style: italic;" class="text-warning">Lên Kế Hoạch Cho Ngày Trọng Đại</h1>
+            <h1 style="font-family: var(--font-display); font-style: italic;"
+                class="text-warning">
+                Lên Kế Hoạch Cho Ngày Trọng Đại
+            </h1>
             <p class="text-white-50 m-0">Hệ thống tính toán báo giá tự động và giữ chỗ sảnh tiệc thời gian thực</p>
 
             <div class="d-flex justify-content-center gap-4 mt-4">
@@ -215,7 +218,6 @@
                 fetchServicesToSelect();
             });
 
-            // 🌟 ĐÃ SỬA: Hàm lấy danh sách sảnh chống lỗi chữ hoa/chữ thường
             async function fetchSaloonsToSelect() {
                 const select = document.getElementById('selectSanh');
                 select.innerHTML = '<option value="">Đang tải danh sách sảnh...</option>';
@@ -226,7 +228,6 @@
 
                     const rawData = await res.json();
 
-                    // Chuẩn hóa dữ liệu trả về
                     fullSaloons = rawData.map(s => ({
                         maSanh: s.maSanh || s.MaSanh,
                         tenSanh: s.tenSanh || s.TenSanh || 'Sảnh Chưa Đặt Tên',
@@ -244,7 +245,6 @@
                     fullSaloons.forEach(s => {
                         select.innerHTML += `<option value="${s.maSanh}">${s.tenSanh} (Sức chứa: ${s.sucChua} khách — Giá thuê: ${s.giaThue.toLocaleString('vi-VN')} VNĐ)</option>`;
                     });
-
                 } catch (error) {
                     console.error("Lỗi khi tải danh sách sảnh:", error);
                     select.innerHTML = '<option value="">⚠️ Lỗi kết nối dữ liệu sảnh!</option>';
@@ -268,7 +268,6 @@
                 });
             }
 
-            // Gọi API lấy danh sách Dịch Vụ
             async function fetchServicesToSelect() {
                 try {
                     const res = await fetch('/api/PublicData/services');
@@ -296,32 +295,53 @@
                 }
             }
 
+            // 🌟 ĐÃ SỬA: HÀM NÀY ĐÃ ĐƯỢC TÍCH HỢP KIỂM TRA SỨC CHỨA SẢNH TỪ API
             async function validateStep1() {
                 const maSanh = document.getElementById('selectSanh').value;
                 const ngay = document.getElementById('bookingNgay').value;
                 const maCa = parseInt(document.getElementById('selectCa').value);
-                selectedSanhObject = fullSaloons.find(s => s.maSanh == maSanh);
+                const soBan = parseInt(document.getElementById('txtSoLuongBan').value); // Lấy số lượng bàn khách nhập
 
+                selectedSanhObject = fullSaloons.find(s => s.maSanh == maSanh);
                 if (!selectedSanhObject) {
                     alert("Vui lòng chọn một sảnh hợp lệ!");
                     return;
                 }
 
-                const res = await fetch(`/api/Booking/check-availability?maSanh=${maSanh}&ngayToChuc=${ngay}&maCa=${maCa}`);
-                if(!res.ok) {
-                    const data = await res.json();
-                    alert(data.message);
+                if (!soBan || soBan < 10) {
+                    alert("Vui lòng nhập số lượng bàn hợp lệ (Tối thiểu 10 bàn)!");
                     return;
                 }
 
-                switchStep(2);
+                try {
+                    // 1. GỌI API KIỂM TRA SỨC CHỨA SẢNH (BẢNG THAMSO)
+                    const capacityRes = await fetch(`/api/Booking/check-capacity?maSanh=${maSanh}&soBanDuKien=${soBan}`);
+                    if (!capacityRes.ok) {
+                        const capacityData = await capacityRes.json();
+                        alert(capacityData.message); // Hiển thị thông báo vượt quá số bàn từ Server
+                        return; // CHẶN LẠI NGAY, không cho chuyển qua Bước 2
+                    }
+
+                    // 2. GỌI API KIỂM TRA TRÙNG LỊCH (BẢNG TIECCUOI)
+                    const res = await fetch(`/api/Booking/check-availability?maSanh=${maSanh}&ngayToChuc=${ngay}&maCa=${maCa}`);
+                    if(!res.ok) {
+                        const data = await res.json();
+                        alert(data.message); // Hiển thị thông báo sảnh đã bị người khác đặt
+                        return; // CHẶN LẠI NGAY
+                    }
+
+                    // NẾU HỢP LỆ CẢ 2 ĐIỀU KIỆN TRÊN -> CHO CHUYỂN QUA BƯỚC 2
+                    switchStep(2);
+                } catch (error) {
+                    console.error("Lỗi xác thực:", error);
+                    alert('Lỗi kết nối khi xác thực thông tin sảnh! Vui lòng thử lại.');
+                }
             }
 
             function updateSelectedDishes() {
                 selectedDishesIds = Array.from(document.querySelectorAll('.dish-checkbox:checked')).map(cb => parseInt(cb.value));
             }
 
-            // Cập nhật danh sách dịch vụ và tính tổng tiền dịch vụ
             function updateSelectedServices() {
                 const checkboxes = Array.from(document.querySelectorAll('.service-checkbox:checked'));
                 selectedServicesIds = checkboxes.map(cb => parseInt(cb.value));
@@ -336,12 +356,10 @@
                 switchStep(3);
             }
 
-            // Validate mới cho Bước 3, làm nhiệm vụ tính tiền tổng
             function validateStep3() {
                 const soBan = parseInt(document.getElementById('txtSoLuongBan').value);
                 const giaThueSanh = selectedSanhObject.giaThue || 0;
 
-                // Tính toán tổng tiền: Sảnh + (Món ăn * Số bàn) + Dịch Vụ
                 const tongTienMonAn = selectedDishesIds.length * costPerDishFake * soBan;
                 const tongChiPhi = giaThueSanh + tongTienMonAn + totalServiceCost;
 
@@ -370,11 +388,8 @@
                  const totalAmount = parseFloat(document.getElementById('lblTotalCost').getAttribute('data-amount'));
                  const maCa = parseInt(document.getElementById('selectCa').value);
                  const username = localStorage.getItem('username');
-
-                 // Lấy mã khách hàng thông minh và tự động sửa lỗi
                  let maKH = parseInt(localStorage.getItem('maKhachHang'));
 
-                 // Nếu trình duyệt chưa có mã KH, lập tức gọi API bốc từ Database lên
                  if (!maKH && username) {
                      try {
                          const profileRes = await fetch(`/api/Taikhoan/get-profile?username=${username}`);
