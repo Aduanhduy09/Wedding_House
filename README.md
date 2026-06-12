@@ -13,7 +13,7 @@ Dự án chú trọng vào tính chính xác của dữ liệu, bảo mật ngư
 
 ## ✨ Tính năng nổi bật
 
-### 👨‍💼 Phân hệ Khách hàng (Customer)
+###  Phân hệ Khách hàng (Customer)
 * **Xác thực an toàn:** Đăng ký và khôi phục mật khẩu bảo mật qua hệ thống mã OTP gửi tự động vào Gmail cá nhân.
 * **Đặt tiệc thông minh (4 bước):**
   1. Chọn Không gian & Thời gian (Sảnh, Ca, Số bàn).
@@ -22,21 +22,21 @@ Dự án chú trọng vào tính chính xác của dữ liệu, bảo mật ngư
   4. Xác nhận báo giá tự động.
 * **Quản lý đơn hàng:** Tra cứu lịch sử đặt tiệc và theo dõi trạng thái hợp đồng (Chờ duyệt, Đã cọc, Đã tất toán).
 
-### 👑 Phân hệ Quản trị (Admin)
+###  Phân hệ Quản trị (Admin)
 * **Cấu hình động:** Tùy chỉnh linh hoạt các quy định (số bàn tối đa, giá bàn tối thiểu) cho từng phân hạng sảnh (A, B, C...).
 * **Nghiệp vụ Tất toán:** Xử lý hợp đồng, tính toán tiền còn lại và xuất hóa đơn sau khi tiệc kết thúc.
 * **Báo cáo Thống kê:** Dashboard trực quan tự động tính toán tổng doanh thu theo tháng thực tế.
 
 ---
 
-## 🚀 Điểm nhấn Kỹ thuật (Technical Highlights)
+##  Điểm nhấn Kỹ thuật (Technical Highlights)
 1. **Real-time Validation (Kiểm duyệt thời gian thực):** Hệ thống tự động chặn các lỗi vượt quá sức chứa sảnh hoặc trùng lịch ngay tại thời điểm khách hàng thao tác, đảm bảo không xảy ra xung đột dữ liệu.
 2. **Smart Cleanup System (Dọn rác thông minh):** Tự động phát hiện và xóa các tài khoản rác (người dùng thoát trang khi chưa xác thực OTP) để tối ưu hóa không gian Database và giải phóng Username.
 3. **Security First (Bảo mật tối đa):** Áp dụng **JWT (JSON Web Token)** để phân quyền quản trị và mã hóa mật khẩu một chiều bằng thuật toán **BCrypt** chống lộ lọt dữ liệu.
 
 ---
 
-## 🛠 Công nghệ sử dụng
+##  Công nghệ sử dụng
 
 | Tầng (Layer) | Công nghệ |
 | :--- | :--- |
@@ -47,7 +47,7 @@ Dự án chú trọng vào tính chính xác của dữ liệu, bảo mật ngư
 
 ---
 
-## ⚙️ Hướng dẫn Cài đặt & Chạy dự án (Localhost)
+##  Hướng dẫn Cài đặt & Chạy dự án (Localhost)
 
 **1. Tải mã nguồn**
 ```bash
