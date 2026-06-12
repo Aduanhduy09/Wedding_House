@@ -49,8 +49,8 @@ Dự án chú trọng vào tính chính xác của dữ liệu, bảo mật ngư
 
 ##  Hướng dẫn Cài đặt & Chạy dự án (Localhost)
 
-**1. Tải mã nguồn**
 ```bash
+**1. Tải mã nguồn**
 git clone [https://github.com/Aduanhduy09/Wedding_House.git](https://github.com/Aduanhduy09/Wedding_House.git)
 
 2. Thiết lập Cơ sở dữ liệu (Database)**
